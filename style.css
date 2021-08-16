@@ -1,0 +1,92 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white;
+  height: 100%;
+  font-family: "Josefin_Sans";
+  overflow: hidden;
+}
+@font-face {
+  font-family: "PT_Sans";
+  src: url("fonts/PT_Sans/PTSans-Regular.ttf");
+}
+@font-face {
+  font-family: "Josefin_Sans";
+  src: url("fonts/Josefin_Sans/static/JosefinSans-Bold.ttf");
+}
+@font-face {
+  font-family: "Staatliches";
+  src: url("fonts/Staatliches.ttf");
+}
+#container {
+  display: grid;
+  place-items: Center;
+  height: 100%;
+  font-size: 2rem;
+}
+#centerBox {
+  display: grid;
+  place-items: Center;
+  width: 800px;
+  gap: 1rem;
+}
+input {
+  font-size: 2rem;
+  text-align: center;
+  font-family: "Josefin_Sans";
+}
+button {
+  width: 5em;
+  font-family: "staatliches";
+
+  font-size: 1.5rem;
+}
+#gameCode {
+  font-size: 5em;
+}
+#donate {
+  position: fixed;
+  left: 25px;
+  top: 25px;
+  display: grid;
+  place-items: center;
+}
+#donate button {
+  width: 4em;
+  font-family: "staatliches";
+}
+
+#leftPanel {
+  height: 100%;
+  width: 25%;
+  display: grid;
+  place-items: center;
+}
+#rightPanel {
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  height: 100%;
+  width: 25%;
+  border-left: 2px solid white;
+  text-align: center;
+}
+#users {
+  height: 100%;
+  border-top: 2px solid white;
+  width: auto;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 1em;
+  grid-template-columns: 1fr;
+}
+#user {
+  border-bottom: 2px solid white;
+  margin: 0px 0px, 0px, 10px;
+  text-align: center;
+  width: 100%;
+  font-size: 3em;
+}

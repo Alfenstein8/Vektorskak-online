@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Vektorskak</title>
+</head>
+
+<body>
+    <script src="p5.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
+
+    <script src="global.js"></script>
+    <script src="firebase.js"></script>
+    <script src="gamertag.js"></script>
+    <script src="home.js"></script>
+    <div id="container">
+
+        <div id="centerBox">
+            <h1>Vektorskak</h1>
+            <input id="username" type="text" placeholder="Username">
+            <input id="input" type="text" placeholder="Code" maxlength=6>
+            <div>
+                <button id="startButton">Join Game</button>
+                <button id="newButton">New Game</button>
+            </div>
+        </div>
+    </div>
+    <div id="donate">
+        <form action="https://ko-fi.com/alfenstein" method="get" target="_blank">
+            <button type="submit">Coffee</button>
+        </form>
+    </div>
+</body>
+
+</html>
