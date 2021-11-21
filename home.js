@@ -37,5 +37,5 @@ function Username() {
   }
 }
 function GoToGame(code) {
-  window.document.location = "./game.html?" + code
+  window.document.location = "game/game.html?" + code
 }
