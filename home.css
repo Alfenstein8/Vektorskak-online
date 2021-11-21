@@ -1,0 +1,23 @@
+#donate {
+  position: fixed;
+  left: 25px;
+  top: 25px;
+  display: grid;
+  place-items: center;
+}
+#donate button {
+  width: 4em;
+  font-family: "staatliches";
+}
+#container {
+  display: grid;
+  place-items: Center;
+  height: 100%;
+  font-size: 2rem;
+}
+#centerBox {
+  display: grid;
+  place-items: Center;
+  width: 800px;
+  gap: 1rem;
+}
