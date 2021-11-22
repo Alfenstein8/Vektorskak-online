@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="clip-0">
+      <circle style="fill: rgb(2, 149, 212);" cx="199.92" cy="200.295" r="162.157" transform="matrix(0, 1, -1, 0, 495.101074, -183.633255)"/>
+    </clipPath>
+  </defs>
+  <circle style="fill: rgb(2, 149, 212);" cx="164.628" cy="251.171" r="162.157"/>
+  <circle style="fill: rgb(242, 67, 70);" cx="294.806" cy="185.503" r="162.157" transform="matrix(0, -1, 1, 0, 148.339996, 545.977417)"/>
+  <circle style="clip-path: url(#clip-0); fill: rgb(122, 108, 141);" cx="294.806" cy="185.503" r="162.157" transform="matrix(0, -1, 1, 0, 148.339996, 545.977417)"/>
+</svg>
