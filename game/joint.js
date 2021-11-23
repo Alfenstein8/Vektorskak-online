@@ -52,9 +52,14 @@ class Chain {
     checkWin = true
     let die = false
     if (!this.CanMoveTo(x, y)) return
-    if (logMove == undefined || logMove == true) {
-      moveKey = LogMove(gameCode, this.team, this.head.pos.x, this.head.pos.y, x, y)
+    if (localPlay) {
+      turn = turn == teams.length - 1 ? 1 : turn + 1
+    } else {
+      if (logMove == undefined || logMove == true) {
+        moveKey = LogMove(gameCode, this.team, this.head.pos.x, this.head.pos.y, x, y)
+      }
     }
+
     let joint = UpperJoint(x, y)
     let self = false
     if (joint != undefined) {

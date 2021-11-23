@@ -48,7 +48,7 @@ var deadChains = []
 var dragging = false
 var defaultMove = 3
 var winner = undefined
-
+var localPlay = false
 //callings
 var display = true
 var sortChains = true
@@ -93,6 +93,17 @@ function setup() {
   var auth = firebase.auth()
   gameCode = document.location.search.substr(1, document.location.search.length - 1)
   document.getElementById("gameCode").innerHTML = gameCode
+
+  if (gameCode == "local") {
+    gameSettings = settings
+    UpdateGameSettings(settings)
+    localPlay = true
+    team = -1
+    connected = true
+    ReadySetup()
+    return
+  }
+
   if (gameCode.length != 6) document.getElementById("gameCode").innerHTML = "Game does not exist"
   gameRef = GetGameRef(gameCode)
 
@@ -177,19 +188,24 @@ function ReadySetup() {
 
   BoardSetup()
   SetCanvas()
+  if (localPlay) return
   gameRef.child("log").on("child_added", (snap) => {
     gameLog.push(snap.val())
     let log = snap.val()
-    let joint = UpperJoint(log.from.x, log.from.y)
-    if (joint == undefined || joint.chain.head != joint) {
-      document.getElementById("gameCode").innerHTML = "Something went wrong. Refresh or make a new game"
-    } else if (moveKey != snap.key) {
-      joint.chain.Move(log.to.x, log.to.y, false) //"false" is important
-    }
-    turn = log.team == teams.length - 1 ? 1 : turn + 1
+    ApplyMoveFromLog(log, snap.key)
     document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
   })
 }
+function ApplyMoveFromLog(log, logKey) {
+  let joint = UpperJoint(log.from.x, log.from.y)
+  if (joint == undefined || joint.chain.head != joint) {
+    document.getElementById("gameCode").innerHTML = "Something went wrong. Refresh or make a new game"
+  } else if (moveKey != logKey || localPlay) {
+    joint.chain.Move(log.to.x, log.to.y, false) //"false" is important
+  }
+  turn = log.team == teams.length - 1 ? 1 : turn + 1
+}
+
 function FormatTeamColors() {
   for (let i = 0; i < teamColors.length; i++) {
     const keys = Object.keys(teamColors[i])
@@ -317,7 +333,7 @@ function mousePressed() {
   if (mouseX < 0 || mouseY < 0 || mouseX > boardW * unit || mouseY > boardH * unit) return
 
   let joint = UpperJoint(int(mouseX / unit), int(mouseY / unit))
-  if (joint != undefined && (team == -1 || joint.chain.team == team) && joint == joint.chain.head && turn === team) {
+  if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (team == -1 || turn === team)) {
     selected = selected == undefined ? joint.chain : undefined
   }
 

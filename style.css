@@ -26,8 +26,18 @@ input {
   font-family: "Josefin_Sans";
 }
 button {
-  width: 5em;
   font-family: "staatliches";
-
   font-size: 1.5rem;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.title {
+  font-size: 5rem;
+}
+h2 {
+  font-size: 3rem;
+}
+h3 {
+  font-size: 2.5em;
 }

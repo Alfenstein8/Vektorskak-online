@@ -2,9 +2,10 @@ var username
 var user
 function setup() {
   startButton = select("#startButton")
-  newButton = select("#newButton")
+  newOnlineButton = select("#newOnlineButton")
   input = select("#input")
   username = select("#username")
+  newLocalButton = select("#newLocalButton")
   var auth = firebase.auth()
   auth.signInAnonymously()
   auth.onAuthStateChanged((changedUser) => {
@@ -15,10 +16,13 @@ function setup() {
     code = input.value()
     Username()
   })
-  newButton.mousePressed(() => {
+  newOnlineButton.mousePressed(() => {
     CreateNewGame(user, settings).then(() => {
       Username()
     })
+  })
+  newLocalButton.mousePressed(() => {
+    GoToGame("local")
   })
 }
 function Username() {

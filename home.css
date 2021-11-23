@@ -8,17 +8,24 @@
 }
 #buttons button {
   width: 4em;
-  font-family: "staatliches";
 }
 #container {
   display: grid;
   place-items: Center;
   height: 100%;
-  font-size: 2rem;
 }
 #centerBox {
   display: grid;
   place-items: Center;
   width: 800px;
   gap: 1rem;
+}
+
+#divider {
+  width: 100%;
+  border-top: 3px solid white;
+  margin-top: 75px;
+}
+#new {
+  margin: 0;
 }
