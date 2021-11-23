@@ -4,21 +4,23 @@
   top: 25px;
   display: grid;
   gap: 1rem;
-  grid-template-rows: 3;
+  grid-template-columns: auto auto;
 }
 #buttons button {
   width: 4em;
 }
-#container {
-  display: grid;
-  place-items: Center;
-  height: 100%;
-}
+
 #centerBox {
   display: grid;
   place-items: Center;
   width: 500px;
   gap: 1rem;
+}
+
+#container {
+  display: grid;
+  place-items: Center;
+  height: 100%;
 }
 
 #divider {
@@ -28,4 +30,24 @@
 }
 #new {
   margin: 0;
+}
+#redcircle {
+  display: none;
+  position: fixed;
+
+  left: -50px;
+  top: 0;
+  height: 100%;
+  z-index: 0;
+}
+@media (max-width: 700px) {
+  #centerBox {
+    display: grid;
+    place-items: Center;
+    width: 80%;
+    gap: 1rem;
+  }
+  input {
+    width: 80%;
+  }
 }

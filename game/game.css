@@ -1,35 +1,19 @@
-@media (max-width: 750px) {
-  #leftPanel {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: 100px;
-    width: 100%;
-    font-size: 0.6rem;
-    text-align: center;
-    text-justify: bottom;
-  }
-  #rightPanel {
-    display: none;
-  }
+#leftPanel {
+  height: 100%;
+  width: 25%;
+  display: grid;
+  place-items: center;
 }
-@media (min-width: 750px) {
-  #leftPanel {
-    height: 100%;
-    width: 25%;
-    display: grid;
-    place-items: center;
-  }
-  #rightPanel {
-    position: fixed;
-    right: 0px;
-    top: 0px;
-    height: 100%;
-    width: 25%;
-    border-left: 2px solid white;
-    text-align: center;
-  }
+#rightPanel {
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  height: 100%;
+  width: 25%;
+  border-left: 2px solid white;
+  text-align: center;
 }
+
 #users {
   height: 100%;
   border-top: 2px solid white;
@@ -49,4 +33,20 @@
 }
 #gameCode {
   font-size: 5em;
+}
+
+@media (max-width: 750px) {
+  #leftPanel {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 100px;
+    width: 100%;
+    font-size: 0.6rem;
+    text-align: center;
+    text-justify: bottom;
+  }
+  #rightPanel {
+    display: none;
+  }
 }
