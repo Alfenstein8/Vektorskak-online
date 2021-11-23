@@ -17,7 +17,7 @@
 #centerBox {
   display: grid;
   place-items: Center;
-  width: 800px;
+  width: 500px;
   gap: 1rem;
 }
 
