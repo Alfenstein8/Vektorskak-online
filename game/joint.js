@@ -65,7 +65,7 @@ class Chain {
     if (joint != undefined) {
       if (
         joint.chain.neck == joint &&
-        (linkDeath ? pointIntersection(joint.chain.head.pos, createVector(x, y), this.head.pos) > 0.1 : true) &&
+        (linkDeath ? PointLineIntersection(joint.chain.head.pos, createVector(x, y), this.head.pos) > 0.1 : true) &&
         joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0
       )
         joint.chain.Die()
@@ -90,7 +90,7 @@ class Chain {
           let end1 = createVector(x, y)
           let start2 = chain.joints[j - 1].pos
           let end2 = chain.joints[j].pos
-          if (lineIntersection(start1, end1, start2, end2) && !chain.dead) {
+          if (IsLinesIntersecting(start1, end1, start2, end2) && !chain.dead) {
             return true
           }
         }

@@ -366,10 +366,10 @@ function JointShape(x, y, size) {
   //rectMode(CENTER)
   //rect(posX, posY, size, size, 5)
 }
-function lineIntersection(a, b, c, d) {
+function IsLinesIntersecting(a, b, c, d) {
   var det, gamma, lambda
   det = (b.y - a.y) * (d.x - c.x) - (d.y - c.y) * (b.x - a.x)
-  if (pointIntersection(b, c, d) < 0.1) return true
+  if (PointLineIntersection(b, c, d) < 0.1) return true
   if (det === 0) {
     return false
   } else {
@@ -378,7 +378,7 @@ function lineIntersection(a, b, c, d) {
     return 0 < lambda && lambda < 1 && 0 < gamma && gamma < 1
   }
 }
-function pointIntersection(a, b, c) {
+function PointLineIntersection(a, b, c) {
   var d = a.x - b.x
   var e = a.y - b.y
   var bDis = Math.sqrt(d * d + e * e)
