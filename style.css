@@ -24,12 +24,14 @@ input {
   font-size: 2rem;
   text-align: center;
   font-family: "Josefin_Sans";
+  border-radius: 5px;
 }
 button {
   font-family: "staatliches";
   font-size: 1.5rem;
   padding-left: 15px;
   padding-right: 15px;
+  border-radius: 5px;
 }
 
 .title {
