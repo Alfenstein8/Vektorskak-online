@@ -12,9 +12,8 @@ var firebaseConfig = {
 var app = firebase.initializeApp(firebaseConfig)
 
 var db = firebase.database().ref()
-
-async function JoinGame(code, User, team) {
-  let gameRef = GetGameRef(code)
+async function JoinGame(gameID, User, team) {
+  let gameRef = GetGameRef(gameID)
   let playerSnap = await gameRef.child("players").get()
   team = team == undefined ? FindTeam(playerSnap, User) : team
   await gameRef
@@ -26,9 +25,23 @@ async function JoinGame(code, User, team) {
     })
     .then(() => {
       gameRef.child("players").child(User.uid).onDisconnect().remove()
+      console.log("connected to " + gameID)
     })
     .catch((error) => console.error(error))
   return Promise.resolve(team)
+}
+function LeaveGame() {
+  let ref = GetGameRef(gameID)
+  if (ref == undefined) return
+  ref.child("players").off("child_removed")
+  ref.child("players").off("child_added")
+  ref.child("log").off("child_added")
+  ref.child("players").child(user.uid).remove()
+  let users = document.querySelectorAll("#users > *")
+  for (let user of users) {
+    user.remove()
+  }
+  console.log("disconnected from " + gameID)
 }
 function FindTeam(playerSnap, User) {
   if (playerSnap.exists()) {
@@ -50,16 +63,17 @@ function FindTeam(playerSnap, User) {
   }
   return 0
 }
+
 async function CreateNewGame(User, settings) {
   settings.owner = User.uid
   let gameRef
-  code = GenerateCode(6)
-  gameRef = db.child("games").child(code).child("settings")
+  gameID = GenerateCode(6)
+  gameRef = db.child("games").child(gameID).child("settings")
   await gameRef.set(settings)
   return gameRef
 }
-function LogMove(code, team, fromX, fromY, toX, toY) {
-  let log = GetGameRef(code).child("log")
+function LogMove(gameID, team, fromX, fromY, toX, toY) {
+  let log = GetGameRef(gameID).child("log")
   let newLog = log.push()
   moveKey = newLog.key //FIX moveKey is out of scope
   newLog
@@ -73,9 +87,64 @@ function LogMove(code, team, fromX, fromY, toX, toY) {
     })
   return newLog.key
 }
-function GetGameRef(code) {
-  return db.child("games").child(code)
+
+function SignInAnon(callback) {
+  firebase
+    .auth()
+    .signInAnonymously()
+    .then(() => {
+      callback(firebase.auth().currentUser)
+    })
+    .catch((error) => {
+      console.log("Could not sign in")
+      console.error(error)
+    })
 }
+function GetGameSettings(gameID, callback) {
+  let ref = GetGameRef(gameID)
+  if (ref === undefined) return
+  ref
+    .child("settings")
+    .get()
+    .then((snap) => {
+      if (snap.exists()) callback(snap.val())
+      else callback(undefined)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
+function GetGameRef(gameID) {
+  if (gameID === undefined || gameID === null || gameID == "") {
+    console.error("Invalid gameID")
+    return undefined
+  }
+  return db.child("games").child(gameID)
+}
+function PlayerJoined(gameID, callback) {
+  GetGameRef(gameID)
+    .child("players")
+    .on("child_added", (player) => {
+      callback(player)
+    })
+}
+
+function PlayerLeft(gameID, callback) {
+  GetGameRef(gameID)
+    .child("players")
+    .on("child_removed", (player) => {
+      callback(player)
+    })
+}
+
+function LogAdded(gameID, callback) {
+  GetGameRef(gameID)
+    .child("log")
+    .on("child_added", (snap) => {
+      callback(snap.val(), snap.key)
+    })
+}
+
 function GenerateCode(length) {
   let charaters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz1234567890"
   let code = ""

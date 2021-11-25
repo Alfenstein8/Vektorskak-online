@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="home.css">
+    <link rel="stylesheet" type="text/css" href="game/game.css">
     <link rel="icon" href="media/favicon.ico" sizes="any">
     <link rel="icon" href="media/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="media/apple-touch-icon.png">
@@ -21,35 +22,57 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
 
-    <script src="global.js"></script>
     <script src="firebase.js"></script>
+    <script src="global.js"></script>
     <script src="gamertag.js"></script>
     <script src="home.js"></script>
 
-    <img id="redcircle" src="media/redcircle.svg" />
-    <div id="container">
+    <!-- Game files -->
+    <script src="game/cell.js"></script>
+    <script src="game/joint.js"></script>
+    <script src="game/game.js"></script>
+    <!-- Game files -->
 
-        <div id="centerBox">
-            <h1 class="title">Vektorskak</h1>
-            <input id="username" type="text" placeholder="Username">
-            <input id="input" type="text" placeholder="Code" maxlength=6>
-            <button id="startButton">Join Game</button>
-            <hr id="divider" class="solid">
-            <h3 id="new">New game</h3>
-            <div>
-                <button id="newOnlineButton">Online</button>
-                <button id="newLocalButton">Local</button>
+    <div id="homepage">
+        <img id="redcircle" src="media/redcircle.svg" />
+        <div id="container">
+
+            <div id="centerBox">
+                <h1 class="title">Vektorskak</h1>
+                <input id="username" type="text" placeholder="Username">
+                <input id="input" type="text" placeholder="Code" maxlength=6>
+                <button id="startButton">Join Game</button>
+                <hr id="divider" class="solid">
+                <h3 id="new">New game</h3>
+                <div>
+                    <button id="newOnlineButton">Online</button>
+                    <button id="newLocalButton">Local</button>
+                </div>
+            </div>
+        </div>
+        <div id="buttons">
+            <form action="https://ko-fi.com/alfenstein" method="get" target="_blank">
+                <button type="submit">Coffee</button>
+            </form>
+            <form action="https://github.com/Alfenstein8/Vektorskak-online" method="get" target="_blank">
+                <button type="submit">Github</button>
+            </form>
+        </div>
+    </div>
+    <div class="hidden" id="gamepage">
+        <button id="backHome">Home</button>
+        <div id="leftPanel">
+            <h1 id="gameCode"></h1>
+            <h1 id="turn"></h1>
+            <h1 id="team"></h1>
+        </div>
+        <div id="rightPanel">
+            <h1>Users</h1>
+            <div id="users">
             </div>
         </div>
     </div>
-    <div id="buttons">
-        <form action="https://ko-fi.com/alfenstein" method="get" target="_blank">
-            <button type="submit">Coffee</button>
-        </form>
-        <form action="https://github.com/Alfenstein8/Vektorskak-online" method="get" target="_blank">
-            <button type="submit">Github</button>
-        </form>
-    </div>
+
 </body>
 
 </html>

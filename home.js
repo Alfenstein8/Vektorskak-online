@@ -1,45 +1,47 @@
 var username
 var user
-function setup() {
+function HomeSetup() {
   startButton = select("#startButton")
   newOnlineButton = select("#newOnlineButton")
   input = select("#input")
   username = select("#username")
   newLocalButton = select("#newLocalButton")
-  var auth = firebase.auth()
-  auth.signInAnonymously()
-  auth.onAuthStateChanged((changedUser) => {
+  firebase.auth().onAuthStateChanged((changedUser) => {
     user = changedUser
     if (changedUser.displayName != undefined) username.value(changedUser.displayName)
   })
   startButton.mousePressed(() => {
-    code = input.value()
+    gameID = input.value()
     Username()
   })
   newOnlineButton.mousePressed(() => {
-    CreateNewGame(user, settings).then(() => {
+    CreateNewGame(user, defaultGameSettings).then(() => {
       Username()
     })
   })
   newLocalButton.mousePressed(() => {
-    GoToGame("local")
+    gameID = "local"
+    ChangePage(gamepage)
   })
 }
+// input.addEventListener("keydown", (e) => { //Press enter in the input field to join
+//   if (e.code === "Enter") {
+//     gameID = input.value()
+//     Username()
+//   }
+// })
 function Username() {
   if (username.value() === "") {
     user.updateProfile({ displayName: generate_badass_gamertag() }).then(() => {
-      GoToGame(code)
+      ChangePage(gamepage)
     })
   } else {
     if (user.displayName == username.value()) {
-      GoToGame(code)
+      ChangePage(gamepage)
     } else {
       user.updateProfile({ displayName: username.value() }).then(() => {
-        GoToGame(code)
+        ChangePage(gamepage)
       })
     }
   }
-}
-function GoToGame(code) {
-  window.document.location = "game/game.html?" + code
 }

@@ -7,17 +7,17 @@ class Chain {
     this.team = team
     this.dead = false
     this.baseCell = createVector(x, y)
-    this.moveDistance = defaultMove
+    this.moveDistance = gameSettings.defaultMove
     teams[this.team].chains.push(this)
     aliveChains.push(this)
   }
   Draw() {
     if (this.dead) {
-      fill(teamColors[this.team].dead)
-      stroke(teamColors[this.team].dead)
+      fill(gameSettings.teamColors[this.team].dead)
+      stroke(gameSettings.teamColors[this.team].dead)
     } else {
-      fill(teamColors[this.team].color)
-      stroke(teamColors[this.team].color)
+      fill(gameSettings.teamColors[this.team].color)
+      stroke(gameSettings.teamColors[this.team].color)
     }
     for (let i = 0; i < this.joints.length; i++) {
       strokeWeight(lineWidth)
@@ -37,9 +37,10 @@ class Chain {
       }
       JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize)
     }
+    gameSettings.specialCells
     for (let i = 0; i < this.joints.length; i++) {
       strokeWeight(0)
-      fill(teamColors[this.team].head)
+      fill(gameSettings.teamColors[this.team].head)
       if (i == this.joints.length - 1) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 2)
       } else if (i == this.joints.length - 2 && this.joints[i].pos.x - this.baseCell.x + this.joints[i].pos.y - this.baseCell.y != 0) {
@@ -56,7 +57,7 @@ class Chain {
       turn = turn == teams.length - 1 ? 1 : turn + 1
     } else {
       if (logMove == undefined || logMove == true) {
-        moveKey = LogMove(gameCode, this.team, this.head.pos.x, this.head.pos.y, x, y)
+        moveKey = LogMove(gameID, this.team, this.head.pos.x, this.head.pos.y, x, y)
       }
     }
 
@@ -65,7 +66,7 @@ class Chain {
     if (joint != undefined) {
       if (
         joint.chain.neck == joint &&
-        (linkDeath ? PointLineIntersection(joint.chain.head.pos, createVector(x, y), this.head.pos) > 0.1 : true) &&
+        (gameSettings.linkDeath ? PointLineIntersection(joint.chain.head.pos, createVector(x, y), this.head.pos) > 0.1 : true) &&
         joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0
       )
         joint.chain.Die()
@@ -74,9 +75,9 @@ class Chain {
       if (joint.chain == this) self = true
     }
 
-    if (linkDeath) die = this.CheckIntersections(x, y) ? true : die
+    if (gameSettings.linkDeath) die = this.CheckIntersections(x, y) ? true : die
     if (!die && !self) new Joint(x, y, this)
-    if (shortChain && this.joints.length > maxChainLength) this.RemoveJoint(0)
+    if (gameSettings.shortChain && this.joints.length > gameSettings.maxChainLength) this.RemoveJoint(0)
 
     if (die) this.Die()
     checkWin = true
@@ -84,7 +85,7 @@ class Chain {
   CheckIntersections(x, y) {
     for (let c = 0; c < aliveChains.length; c++) {
       const chain = aliveChains[c]
-      if ((friendlyFire ? true : chain.team != this.team) || (selfharm ? chain == this : false)) {
+      if ((gameSettings.friendlyFire ? true : chain.team != this.team) || (gameSettings.selfharm ? chain == this : false)) {
         for (let j = 1; j < chain.joints.length; j++) {
           let start1 = this.head.pos
           let end1 = createVector(x, y)
@@ -102,10 +103,10 @@ class Chain {
     this.Move(this.head.pos.x + x, this.head.pos.y + y)
   }
   Die() {
-    if (deathMode == DeathModes.ChainReset) {
+    if (gameSettings.deathMode == DeathModes.ChainReset) {
       if (this.joints.length > 2) this.ChainReset()
       else this.BaseReset()
-    } else if (deathMode == DeathModes.BaseReset) {
+    } else if (gameSettings.deathMode == DeathModes.BaseReset) {
       this.BaseReset()
     } else {
       this.dead = true
@@ -131,7 +132,7 @@ class Chain {
   CanMoveTo(x, y) {
     return (
       abs(this.head.pos.x - x) + abs(this.head.pos.y - y) <=
-        this.moveDistance + (specialCells ? board[this.head.pos.x][this.head.pos.y].extraMovement : 0) &&
+        this.moveDistance + (gameSettings.specialCells ? board[this.head.pos.x][this.head.pos.y].extraMovement : 0) &&
       abs(this.head.pos.x - x) + abs(this.head.pos.y - y) > 0
     )
   }
@@ -160,6 +161,7 @@ class Joint {
     this.pos = createVector(x, y)
     this.chain = chain
     this.chain.joints.push(this)
+
     board[x][y].content.push(this)
     this.chain.head = this
     if (this.chain.joints.length >= 2) {
