@@ -23,7 +23,6 @@ var winner = undefined
 var localPlay = false
 //callings
 var display = true
-var sortChains = true
 var checkWin = false
 //#region firebase
 var gameID = undefined
@@ -262,7 +261,7 @@ function mousePressed() {
   if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
 
   let joint = UpperJoint(int(mouseX / unit), int(mouseY / unit))
-  if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (team == -1 || turn === team)) {
+  if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (localPlay || turn === team)) {
     selected = selected == undefined ? joint.chain : undefined
   }
 
@@ -295,36 +294,41 @@ function JointShape(x, y, size) {
   //rectMode(CENTER)
   //rect(posX, posY, size, size, 5)
 }
-function IsLinesIntersecting(a, b, c, d) {
-  var det, gamma, lambda
-  det = (b.y - a.y) * (d.x - c.x) - (d.y - c.y) * (b.x - a.x)
-  if (PointLineIntersection(b, c, d) < 0.1) return true
-  if (det === 0) {
-    return false
-  } else {
-    lambda = ((d.x - c.x) * (d.y - a.y) + (c.y - d.y) * (d.x - a.x)) / det
-    gamma = ((a.x - b.x) * (d.y - a.y) + (b.y - a.y) * (d.x - a.x)) / det
-    return 0 < lambda && lambda < 1 && 0 < gamma && gamma < 1
+function IsLinesIntersecting(p0, p1, p2, p3) {
+  let points = [p0, p1, p2, p3]
+  if (
+    points.reduce(function (memo, element) {
+      return element === points[0]
+    })
+  )
+    return null
+
+  var A1 = p1.y - p0.y,
+    B1 = p0.x - p1.x,
+    C1 = A1 * p0.x + B1 * p0.y,
+    A2 = p3.y - p2.y,
+    B2 = p2.x - p3.x,
+    C2 = A2 * p2.x + B2 * p2.y,
+    denominator = A1 * B2 - A2 * B1
+
+  if (denominator == 0) {
+    return null
   }
-}
-function PointLineIntersection(a, b, c) {
-  var d = a.x - b.x
-  var e = a.y - b.y
-  var bDis = Math.sqrt(d * d + e * e)
 
-  d = a.x - c.x
-  e = a.y - c.y
-  var cDis = Math.sqrt(d * d + e * e)
+  var intersectX = (B2 * C1 - B1 * C2) / denominator,
+    intersectY = (A1 * C2 - A2 * C1) / denominator,
+    rx0 = (intersectX - p0.x) / (p1.x - p0.x),
+    ry0 = (intersectY - p0.y) / (p1.y - p0.y),
+    rx1 = (intersectX - p2.x) / (p3.x - p2.x),
+    ry1 = (intersectY - p2.y) / (p3.y - p2.y)
 
-  d = b.x - c.x
-  e = b.y - c.y
-  var lineDis = Math.sqrt(d * d + e * e)
-
-  if (bDis * bDis > cDis * cDis + lineDis * lineDis) return bDis
-  else if (cDis * cDis > bDis * bDis + lineDis * lineDis) return cDis
-  else {
-    var s = (bDis + cDis + lineDis) / 2
-    return (2 / lineDis) * sqrt(s * (s - bDis) * (s - cDis) * (s - lineDis))
+  if (((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
+    return {
+      x: intersectX,
+      y: intersectY,
+    }
+  } else {
+    return null
   }
 }
 function CheckWin() {
