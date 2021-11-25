@@ -63,23 +63,18 @@ class Chain {
 
     let joint = UpperJoint(x, y)
     let self = false
+    let inter = this.CheckIntersections(x, y)
 
     if (joint != undefined) {
-      console.log("head:" + joint.chain.head.pos)
-      console.log("head:" + joint.chain.neck.pos)
-      console.log("move to:" + createVector(x, y))
-      if (
-        joint.chain.neck == joint &&
-        (gameSettings.linkDeath ? true : joint.chain.neck.pos == createVector(x, y)) &&
-        joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0
-      )
+      if (joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0 && inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y)
         joint.chain.Die()
       else die = true
 
       if (joint.chain == this) self = true
+    } else {
+      if (gameSettings.linkDeath) die = inter ? true : die
     }
 
-    if (gameSettings.linkDeath) die = this.CheckIntersections(x, y) ? true : die
     if (!die && !self) new Joint(x, y, this)
     if (gameSettings.shortChain && this.joints.length > gameSettings.maxChainLength) this.RemoveJoint(0)
 
@@ -96,7 +91,7 @@ class Chain {
           let start2 = chain.joints[j - 1].pos
           let end2 = chain.joints[j].pos
           if (IsLinesIntersecting(start1, end1, start2, end2) && !chain.dead) {
-            return true
+            return IsLinesIntersecting(start1, end1, start2, end2)
           }
         }
       }
