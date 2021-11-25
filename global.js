@@ -5,18 +5,18 @@ const DeathModes = {
 }
 
 const defaultGameSettings = {
-  owner: 0,
-  spectatorsAllowed: 5,
-  deathMode: DeathModes.ChainReset,
-  shortChain: true,
-  maxChainLength: 3,
+  owner: 0, //Owner of the game (server)
+  spectatorsAllowed: 5, //Number of the maximum spectators in a game
+  deathMode: DeathModes.ChainReset, //What happens when a chain is killed
+  shortChain: true, //Is there a limit on how many joints a chain can have?
+  maxChainLength: 3, // Maximum number of joints in a chain
   linkDeath: true,
-  specialCells: false,
-  friendlyFire: true,
-  selfharm: true,
-  deathWin: true,
-  baseWin: true,
-  defaultMove: 3,
+  specialCells: false, //Is there a special cells that modify the game?
+  friendlyFire: true, //Is it possible to kill own chains?
+  selfharm: true, // is it possible for a chain to kill itself?
+  deathWin: true, //Can you win by killing all the other teams chains?
+  baseWin: true, //Can you win by reaching the other teams base?
+  defaultMove: 3, //The maximum move reach for a chain
   boardW: 9,
   boardH: 15,
   setup: [

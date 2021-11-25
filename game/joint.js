@@ -63,10 +63,14 @@ class Chain {
 
     let joint = UpperJoint(x, y)
     let self = false
+
     if (joint != undefined) {
+      console.log("head:" + joint.chain.head.pos)
+      console.log("head:" + joint.chain.neck.pos)
+      console.log("move to:" + createVector(x, y))
       if (
         joint.chain.neck == joint &&
-        (gameSettings.linkDeath ? PointLineIntersection(joint.chain.head.pos, createVector(x, y), this.head.pos) > 0.1 : true) &&
+        (gameSettings.linkDeath ? true : joint.chain.neck.pos == createVector(x, y)) &&
         joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0
       )
         joint.chain.Die()

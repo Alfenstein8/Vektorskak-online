@@ -8,6 +8,9 @@ body {
   font-family: "Josefin_Sans";
   overflow: hidden;
 }
+body {
+  position: relative;
+}
 @font-face {
   font-family: "PT_Sans";
   src: url("fonts/PT_Sans/PTSans-Regular.ttf");
