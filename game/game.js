@@ -318,7 +318,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
       let ymax = Math.max(p0.y, p1.y)
       let ymin = Math.min(p0.y, p1.y)
 
-      if ((ymin < p2.y && p2.y < ymax) || (ymin < p3.y && p3.y < ymax)) {
+      if (((ymin < p2.y && p2.y < ymax) || (ymin < p3.y && p3.y < ymax)) && p0.x == p2.x) {
         return true
       }
     } else {
@@ -365,23 +365,6 @@ function getLine(x1, y1, x2, y2, a, b, c) {
   b = x2 - x1
   c = x1 * y2 - x2 * y1
   return [a, b, c]
-}
-
-function pointToLineDist(x, y, x1, y1, x2, y2) {
-  let z = 0,
-    z1 = 0,
-    z2 = 0
-  AB = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1))
-  AP = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1) + (z - z1) * (z - z1))
-  PB = sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) + (z2 - z) * (z2 - z))
-  if (AB == AP + PB) return true
-
-  // let line = getLine(pct2X, pct2Y, pct3X, pct3Y)
-  // let a = line[0],
-  //   b = line[1],
-  //   c = line[2]
-
-  // return abs(a * pct1X + b * pct1Y + c) / sqrt(a * a + b * b)
 }
 function CheckWin() {
   let winnerFound = false
