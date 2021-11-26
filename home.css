@@ -61,3 +61,11 @@
     height: 80px;
   }
 }
+@media (max-height: 700px) {
+  #divider {
+    margin-top: 10px;
+  }
+  .title {
+    margin-bottom: 0px;
+  }
+}
