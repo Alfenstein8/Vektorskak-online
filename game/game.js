@@ -303,7 +303,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
   )
     return null
 
-  var A1 = p1.y - p0.y,
+  let A1 = p1.y - p0.y,
     B1 = p0.x - p1.x,
     C1 = A1 * p0.x + B1 * p0.y,
     A2 = p3.y - p2.y,
@@ -312,6 +312,33 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
     denominator = A1 * B2 - A2 * B1
 
   if (denominator == 0) {
+    //The lines are parallel
+    if (p0.x == p1.x) {
+      //Lines vartical
+      let ymax = Math.max(p0.y, p1.y)
+      let ymin = Math.min(p0.y, p1.y)
+
+      if ((ymin < p2.y && p2.y < ymax) || (ymin < p3.y && p3.y < ymax)) {
+        return true
+      }
+    } else {
+      slope1 = A1 / B2
+      slope2 = A2 / B2
+
+      axe1 = -slope1 * p0.x + p0.y
+      axe2 = -slope1 * p2.x + p2.y
+
+      let xmax = Math.max(p0.x, p1.x)
+      let xmin = Math.min(p0.x, p1.x)
+
+      if (abs(slope1) == abs(slope2) && axe1 == axe2) {
+        //Same line
+        if ((xmin < p2.x && p2.x < xmax) || (xmin < p3.x && p3.x < xmax)) {
+          //Same linesegment
+          return true
+        }
+      }
+    }
     return null
   }
 
@@ -330,6 +357,31 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
   } else {
     return null
   }
+}
+
+function getLine(x1, y1, x2, y2, a, b, c) {
+  // (x- p1X) / (p2X - p1X) = (y - p1Y) / (p2Y - p1Y)
+  a = y1 - y2 // Note: this was incorrectly "y2 - y1" in the original answer
+  b = x2 - x1
+  c = x1 * y2 - x2 * y1
+  return [a, b, c]
+}
+
+function pointToLineDist(x, y, x1, y1, x2, y2) {
+  let z = 0,
+    z1 = 0,
+    z2 = 0
+  AB = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1))
+  AP = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1) + (z - z1) * (z - z1))
+  PB = sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) + (z2 - z) * (z2 - z))
+  if (AB == AP + PB) return true
+
+  // let line = getLine(pct2X, pct2Y, pct3X, pct3Y)
+  // let a = line[0],
+  //   b = line[1],
+  //   c = line[2]
+
+  // return abs(a * pct1X + b * pct1Y + c) / sqrt(a * a + b * b)
 }
 function CheckWin() {
   let winnerFound = false
