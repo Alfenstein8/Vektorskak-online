@@ -38,11 +38,13 @@ button {
 }
 .cornerButtons {
   position: fixed;
-  left: 25px;
-  top: 25px;
+  left: 0px;
+  top: 0px;
   display: grid;
-  gap: 1rem;
   grid-template-columns: auto auto auto;
+}
+.cornerButtons button {
+  margin: 25px 0px 0px 25px;
 }
 .title {
   font-size: 5rem;
@@ -94,5 +96,15 @@ p {
   }
   p {
     font-size: 1rem;
+  }
+  .cornerButtons {
+    place-items: center;
+    width: 100%;
+  }
+  .cornerButtons button {
+    margin: 15px 8px 0px 8px;
+  }
+  button {
+    font-size: 1.4rem;
   }
 }
