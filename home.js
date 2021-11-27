@@ -6,6 +6,8 @@ function HomeSetup() {
   input = select("#input")
   username = select("#username")
   newLocalButton = select("#newLocalButton")
+  homeButton = select("#homeButton")
+  howToPlayButton = select("#howToPlayButton")
   firebase.auth().onAuthStateChanged((changedUser) => {
     user = changedUser
     if (changedUser.displayName != undefined) username.value(changedUser.displayName)
@@ -22,6 +24,12 @@ function HomeSetup() {
   newLocalButton.mousePressed(() => {
     gameID = "local"
     ChangePage(gamepage)
+  })
+  homeButton.mousePressed(() => {
+    ChangePage(homepage)
+  })
+  howToPlayButton.mousePressed(() => {
+    ChangePage(rulespage)
   })
 }
 // input.addEventListener("keydown", (e) => { //Press enter in the input field to join

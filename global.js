@@ -79,12 +79,13 @@ const defaultGameSettings = {
     },
   ],
 }
-var homepage, gamepage
+var homepage, gamepage, rulespage
 
 function setup() {
   //Runs when page loades
   homepage = select("#homepage")
   gamepage = select("#gamepage")
+  rulespage = select("#rulespage")
   gameID = document.location.search.substr(1, document.location.search.length - 1)
   SignInAnon((_user) => {
     user = _user
@@ -102,13 +103,20 @@ function ChangePage(page) {
       homepage.removeClass("hidden")
       gamepage.addClass("hidden")
       history.pushState({ id: "homepage" }, "homepage", "")
+      rulespage.addClass("hidden")
       break
     case gamepage:
       gamepage.removeClass("hidden")
       homepage.addClass("hidden")
       history.pushState({ id: "gamepage" }, "gamepage", "?" + gameID)
+      rulespage.addClass("hidden")
 
       GameSetup()
+      break
+    case rulespage:
+      gamepage.addClass("hidden")
+      homepage.addClass("hidden")
+      rulespage.removeClass("hidden")
       break
   }
 }

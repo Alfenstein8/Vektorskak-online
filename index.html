@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="home.css">
     <link rel="stylesheet" type="text/css" href="game/game.css">
+    <link rel="stylesheet" type="text/css" href="rulespage.css">
     <link rel="icon" href="media/favicon.ico" sizes="any">
     <link rel="icon" href="media/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="media/apple-touch-icon.png">
@@ -35,9 +36,9 @@
 
     <div id="homepage">
         <img id="redcircle" src="media/redcircle.svg" />
-        <div id="container">
+        <div class="centerContainer">
 
-            <div id="centerBox">
+            <div class="centerBox">
                 <img id="homeLogo" src="media/icon.svg" />
                 <h1 class="title">Vektorskak</h1>
                 <input id="username" type="text" placeholder="Username">
@@ -51,13 +52,14 @@
                 </div>
             </div>
         </div>
-        <div id="buttons">
+        <div class="cornerButtons">
             <form action="https://ko-fi.com/alfenstein" method="get" target="_blank">
                 <button type="submit">Coffee</button>
             </form>
             <form action="https://github.com/Alfenstein8/Vektorskak-online" method="get" target="_blank">
                 <button type="submit">Github</button>
             </form>
+            <button id="howToPlayButton">How to play</button>
         </div>
     </div>
     <div class="hidden" id="gamepage">
@@ -70,6 +72,31 @@
         <div id="rightPanel">
             <h1>Users</h1>
             <div id="users">
+            </div>
+        </div>
+    </div>
+
+    <div id="rulespage" class="hidden">
+        <div class="cornerButtons">
+            <button id="homeButton">Home</button>
+        </div>
+        <div class="centerContainer">
+            <div class="centerbox">
+                <h1>How to play</h1>
+                <p>In the default game mode you have three chains that you control. <br>
+                    If you are on team blue you will control the blue chains and wise-versa.<br>
+                    A chains can consist of up to three joints.<br>
+                    The fist joint is the head. This is the one that you can move.<br>
+                    The second is the neck/heart. This is your weak spot. Where an enemy chain can attack.<br>
+                    And the last is the tail.<br>
+
+                    If you get hit in the neck/heart. You’ll be sent back to your tail. If you don’t have a tail you’ll
+                    be sent back to the start.
+                    <br>
+
+                    To win you have to place one of your chains head on the enemies base, marked in their color.<br>
+                    Good luck!
+                </p>
             </div>
         </div>
     </div>
