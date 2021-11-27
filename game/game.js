@@ -9,6 +9,7 @@ var checkerColor1 = 255,
 var lineWidth = 10
 var jointSize = size / 1.25
 var selectColor = "#FFFCC1"
+var markSize = size / 2
 //#endregion
 
 var unit
@@ -232,10 +233,17 @@ function DrawBoard() {
       rect(i * unit, j * unit, unit, unit, a, b, c, d)
       let cordinate = CellToPixel(createVector(i, j))
       board[i][j].Shape(cordinate.x, cordinate.y)
+
+      if (selected != undefined) {
+        if (selected.CanMoveTo(i, j)) {
+          if (selected.CheckIntersections(i, j)) MarkCell(i, j, MARKTYPE.willDie)
+          //@Optemize - Only run CheckIntersections once (Even on drag)
+          else MarkCell(i, j, MARKTYPE.wontDie)
+        }
+      }
     }
   }
 }
-
 function CellColor(x, y) {
   if ((x + y) % 2 == 0) fill(checkerColor1)
   else fill(checkerColor2)
@@ -248,6 +256,33 @@ function CellColor(x, y) {
   if (selected.CanMoveTo(x, y)) {
     fill(selectColor)
   }
+}
+function MarkCell(x, y, markType) {
+  push()
+  switch (markType) {
+    case MARKTYPE.wontDie:
+      fill("#ccc99b")
+      strokeWeight(0)
+      ellipse(x * unit + unit / 2, y * unit + unit / 2, markSize)
+      break
+    case MARKTYPE.willDie:
+      stroke("#ccc99b")
+      strokeWeight(3)
+      line(
+        x * unit - markSize / 2 + unit / 2,
+        y * unit - markSize / 2 + unit / 2,
+        x * unit + markSize / 2 + unit / 2,
+        y * unit + markSize / 2 + unit / 2
+      )
+      line(
+        x * unit - markSize / 2 + unit / 2,
+        y * unit + markSize / 2 + unit / 2,
+        x * unit + markSize / 2 + unit / 2,
+        y * unit - markSize / 2 + unit / 2
+      )
+      break
+  }
+  pop()
 }
 function mouseDragged() {
   if (winner != undefined || !connected) return
@@ -295,14 +330,6 @@ function JointShape(x, y, size) {
   //rect(posX, posY, size, size, 5)
 }
 function IsLinesIntersecting(p0, p1, p2, p3) {
-  let points = [p0, p1, p2, p3]
-  if (
-    points.reduce(function (memo, element) {
-      return element === points[0]
-    })
-  )
-    return null
-
   let A1 = p1.y - p0.y,
     B1 = p0.x - p1.x,
     C1 = A1 * p0.x + B1 * p0.y,
@@ -314,12 +341,14 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
   if (denominator == 0) {
     //The lines are parallel
     if (p0.x == p1.x) {
-      //Lines vartical
-      let ymax = Math.max(p0.y, p1.y)
-      let ymin = Math.min(p0.y, p1.y)
+      //Lines vertical
+      let ymax = Math.max(p2.y, p3.y)
+      let ymin = Math.min(p2.y, p3.y)
 
-      if (((ymin < p2.y && p2.y < ymax) || (ymin < p3.y && p3.y < ymax)) && p0.x == p2.x) {
+      if (((ymin < p0.y && p0.y < ymax) || (ymin < p1.y && p1.y < ymax)) && p0.x == p2.x) {
         return true
+      } else {
+        return null
       }
     } else {
       slope1 = A1 / B2
@@ -328,12 +357,12 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
       axe1 = -slope1 * p0.x + p0.y
       axe2 = -slope1 * p2.x + p2.y
 
-      let xmax = Math.max(p0.x, p1.x)
-      let xmin = Math.min(p0.x, p1.x)
+      let xmax = Math.max(p2.x, p3.x)
+      let xmin = Math.min(p2.x, p3.x)
 
       if (abs(slope1) == abs(slope2) && axe1 == axe2) {
         //Same line
-        if ((xmin < p2.x && p2.x < xmax) || (xmin < p3.x && p3.x < xmax)) {
+        if ((xmin < p0.x && p0.x < xmax) || (xmin < p1.x && p1.x < xmax)) {
           //Same linesegment
           return true
         }
@@ -341,7 +370,9 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
     }
     return null
   }
-
+  if ((p1 == p2) != (p0 == p3)) {
+    return null
+  }
   var intersectX = (B2 * C1 - B1 * C2) / denominator,
     intersectY = (A1 * C2 - A2 * C1) / denominator,
     rx0 = (intersectX - p0.x) / (p1.x - p0.x),
@@ -360,8 +391,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
 }
 
 function getLine(x1, y1, x2, y2, a, b, c) {
-  // (x- p1X) / (p2X - p1X) = (y - p1Y) / (p2Y - p1Y)
-  a = y1 - y2 // Note: this was incorrectly "y2 - y1" in the original answer
+  a = y1 - y2
   b = x2 - x1
   c = x1 * y2 - x2 * y1
   return [a, b, c]

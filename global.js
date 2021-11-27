@@ -3,7 +3,10 @@ const DeathModes = {
   BaseReset: 1,
   ChainReset: 2,
 }
-
+const MARKTYPE = {
+  willDie: 0,
+  wontDie: 1,
+}
 const defaultGameSettings = {
   owner: 0, //Owner of the game (server)
   spectatorsAllowed: 5, //Number of the maximum spectators in a game
