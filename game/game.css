@@ -35,12 +35,6 @@
   font-size: 5em;
 }
 
-#backHome {
-  position: fixed;
-  top: 25px;
-  left: 25px;
-}
-
 @media (max-width: 750px) {
   #leftPanel {
     position: fixed;

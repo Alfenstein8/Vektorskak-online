@@ -91,8 +91,11 @@ function setup() {
     user = _user
     if (gameID != "") ChangePage(gamepage)
     HomeSetup()
-    select("#backHome").mousePressed(() => {
+    select("#gameBackHome").mousePressed(() => {
       LeaveGame()
+      ChangePage(homepage)
+    })
+    select("#rulesBackHome").mousePressed(() => {
       ChangePage(homepage)
     })
   })
