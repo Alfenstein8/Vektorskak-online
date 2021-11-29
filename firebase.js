@@ -12,6 +12,7 @@ var firebaseConfig = {
 var app = firebase.initializeApp(firebaseConfig)
 
 var db = firebase.database().ref()
+
 async function JoinGame(gameID, User, team) {
   let gameRef = GetGameRef(gameID)
   let playerSnap = await gameRef.child("players").get()
@@ -33,15 +34,19 @@ async function JoinGame(gameID, User, team) {
 function LeaveGame() {
   let ref = GetGameRef(gameID)
   if (ref == undefined) return
-  ref.child("players").off("child_removed")
-  ref.child("players").off("child_added")
-  ref.child("log").off("child_added")
+  RemoveListenersFromGame(gameID)
   ref.child("players").child(user.uid).remove()
   let users = document.querySelectorAll("#users > *")
   for (let user of users) {
     user.remove()
   }
   console.log("disconnected from " + gameID)
+}
+function RemoveListenersFromGame(gameID) {
+  ref = GetGameRef(gameID)
+  ref.child("players").off("child_removed")
+  ref.child("players").off("child_added")
+  ref.child("log").off("child_added")
 }
 function FindTeam(playerSnap, User) {
   if (playerSnap.exists()) {
@@ -72,20 +77,20 @@ async function CreateNewGame(User, settings) {
   await gameRef.set(settings)
   return gameRef
 }
-function LogMove(gameID, team, fromX, fromY, toX, toY) {
+function LogMove(gameID, team, from, to) {
   let log = GetGameRef(gameID).child("log")
   let newLog = log.push()
-  moveKey = newLog.key //FIX moveKey is out of scope
+  moveKey = newLog.key
   newLog
     .set({
-      from: { x: fromX, y: fromY },
-      to: { x: toX, y: toY },
+      from: { x: from.x, y: from.y },
+      to: { x: to.x, y: to.y },
       team: team,
     })
     .catch((error) => {
       console.error(error)
     })
-  return newLog.key
+  moveKey = newLog.key
 }
 
 function SignInAnon(callback) {
@@ -100,7 +105,7 @@ function SignInAnon(callback) {
       console.error(error)
     })
 }
-function GetGameSettings(gameID, callback) {
+function GetSettingsFromGame(gameID, callback) {
   let ref = GetGameRef(gameID)
   if (ref === undefined) return
   ref
@@ -114,12 +119,19 @@ function GetGameSettings(gameID, callback) {
       console.error(error)
     })
 }
+let gameRef
 function GetGameRef(gameID) {
   if (gameID === undefined || gameID === null || gameID == "") {
     console.error("Invalid gameID")
     return undefined
   }
-  return db.child("games").child(gameID)
+  if (gameRef === undefined) {
+    gameRef = db.child("games").child(gameID)
+  }
+  if (gameID != gameRef.key) {
+    gameRef = db.child("games").child(gameID)
+  }
+  return gameRef
 }
 function PlayerJoined(gameID, callback) {
   GetGameRef(gameID)

@@ -114,7 +114,7 @@ function ChangePage(page) {
       history.pushState({ id: "gamepage" }, "gamepage", "?" + gameID)
       rulespage.addClass("hidden")
 
-      GameSetup()
+      SetupNewGame()
       break
     case rulespage:
       gamepage.addClass("hidden")

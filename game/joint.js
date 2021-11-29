@@ -1,5 +1,6 @@
 class Chain {
   constructor(x, y, team) {
+    this.chain = this
     this.joints = []
     this.head
     new Joint(x, y, this)
@@ -37,7 +38,6 @@ class Chain {
       }
       JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize)
     }
-    gameSettings.specialCells
     for (let i = 0; i < this.joints.length; i++) {
       strokeWeight(0)
       fill(gameSettings.teamColors[this.team].head)
@@ -48,20 +48,14 @@ class Chain {
       }
     }
   }
-  Move(x, y, logMove) {
+  Move(destination) {
     display = true
     checkWin = true
     let die = false
-    if (!this.CanMoveTo(x, y)) return
-    if (localPlay) {
-      turn = turn == teams.length - 1 ? 1 : turn + 1
-    } else {
-      if (logMove == undefined || logMove == true) {
-        moveKey = LogMove(gameID, this.team, this.head.pos.x, this.head.pos.y, x, y)
-      }
-    }
-
-    let joint = UpperJoint(x, y)
+    let x = destination.x,
+      y = destination.y
+    if (!this.CanMoveTo(x, y)) return false
+    let joint = GetUpperJoint(destination)
     let self = false
     let inter = this.CheckIntersections(x, y)
 
@@ -77,21 +71,25 @@ class Chain {
 
     if (!die && !self) new Joint(x, y, this)
     if (gameSettings.shortChain && this.joints.length > gameSettings.maxChainLength) this.RemoveJoint(0)
-
     if (die) this.Die()
     checkWin = true
+    return true
   }
   CheckIntersections(x, y) {
     for (let c = 0; c < aliveChains.length; c++) {
       const chain = aliveChains[c]
       if ((gameSettings.friendlyFire ? true : chain.team != this.team) || (gameSettings.selfharm ? chain == this : false)) {
-        for (let j = 1; j < chain.joints.length; j++) {
-          let start1 = this.head.pos
-          let end1 = createVector(x, y)
-          let start2 = chain.joints[j - 1].pos
-          let end2 = chain.joints[j].pos
-          if (IsLinesIntersecting(start1, end1, start2, end2) && !chain.dead) {
-            return IsLinesIntersecting(start1, end1, start2, end2)
+        for (let j = 0; j < chain.joints.length; j++) {
+          if (j == 0) {
+            if (IsPointOnLineSegment(chain.joints[0].pos, this.head.pos, createVector(x, y))) return true
+          } else {
+            let start1 = this.head.pos
+            let end1 = createVector(x, y)
+            let start2 = chain.joints[j - 1].pos
+            let end2 = chain.joints[j].pos
+            if (IsLinesIntersecting(start1, end1, start2, end2) && !chain.dead) {
+              return IsLinesIntersecting(start1, end1, start2, end2)
+            }
           }
         }
       }
@@ -121,7 +119,7 @@ class Chain {
   }
   BaseReset() {
     this.ClearChain()
-    let cell = UpperJoint(this.baseCell.x, this.baseCell.y)
+    let cell = GetUpperJoint(this.baseCell)
     if (cell != undefined) {
       cell.chain.Die()
     }

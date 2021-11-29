@@ -37,14 +37,13 @@ var turn = 1
 var gameSettings = defaultGameSettings
 
 //#region
-function GameSetup() {
+function SetupNewGame() {
   aliveChains = []
   deadChains = []
-
+  turn = 1
   document.getElementById("gameCode").innerHTML = gameID
   localPlay = gameID == "local"
   if (localPlay) {
-    team = -1
     connected = true
     ReadySetup()
     return
@@ -57,14 +56,12 @@ function GameSetup() {
     user.updateProfile({ displayName: name })
   }
 
-  GetGameSettings(gameID, (_settings) => {
+  GetSettingsFromGame(gameID, (_settings) => {
     if (_settings != undefined) {
       gameSettings = _settings
       JoinGame(gameID, user).then((t) => {
         team = t
-        document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)
-        document.getElementById("team").style.color = gameSettings.teamColors[team].color
-        document.getElementById("turn").innerHTML = team == 1 ? "Your turn" : "Their turn"
+        UpdateAllText()
         connected = true
         ReadySetup()
       })
@@ -88,6 +85,11 @@ function GameSetup() {
       document.getElementById("gameCode").innerHTML = "Game does not exist"
     }
   })
+}
+function UpdateAllText() {
+  document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)
+  document.getElementById("team").style.color = gameSettings.teamColors[team].color
+  document.getElementById("turn").innerHTML = team == 1 ? "Your turn" : "Their turn"
 }
 function ReadySetup() {
   canvas = createCanvas(gameSettings.boardW * size, gameSettings.boardH * size)
@@ -119,18 +121,21 @@ function ReadySetup() {
   if (localPlay) return
   LogAdded(gameID, (log, logID) => {
     gameLog.push(log)
-    ApplyMoveFromLog(log, logID)
-    document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
+    if (logID != moveKey || localPlay) {
+      ApplyMoveFromLog(log)
+    }
+    UpdateAllText()
   })
 }
-function ApplyMoveFromLog(log, logKey) {
-  let joint = UpperJoint(log.from.x, log.from.y)
+function ApplyMoveFromLog(log) {
+  let joint = GetUpperJoint(log.from)
   if (joint == undefined || joint.chain.head != joint) {
-    document.getElementById("gameCode").innerHTML = "Something went wrong. Refresh or make a new game"
-  } else if (moveKey != logKey || localPlay) {
-    joint.chain.Move(log.to.x, log.to.y, false) //"false" is important
+    document.getElementById("gameCode").innerHTML = "Something went wrong. Make a new game"
+    return
   }
-  turn = log.team == teams.length - 1 ? 1 : turn + 1
+
+  joint.chain.Move(log.to)
+  NextTurn()
 }
 
 function FormatteamColors() {
@@ -193,7 +198,7 @@ function draw() {
 }
 function Display() {
   if (!connected) return
-  background(255, 255, 255, 0)
+  clear()
   DrawBoard()
 
   deadChains.forEach((chain) => {
@@ -203,87 +208,7 @@ function Display() {
     chain.Draw()
   })
 }
-function DrawJointDragging() {
-  const mouseCell = createVector((mouseX - unit / 2) / unit, (mouseY - unit / 2) / unit)
-  strokeWeight(lineWidth)
-  stroke(gameSettings.teamColors[selected.team].color)
-  line(selected.head.pos.x * unit + unit / 2, selected.head.pos.y * unit + unit / 2, mouseX, mouseY)
-  fill(gameSettings.teamColors[selected.team].color)
-  strokeWeight(0)
-  JointShape(mouseCell.x, mouseCell.y, jointSize)
-}
 
-function DrawBoard() {
-  rectMode(CORNER)
-  var bevel = 50
-  stroke(0)
-  for (let i = 0; i < gameSettings.boardW; i++) {
-    for (let j = 0; j < gameSettings.boardH; j++) {
-      CellColor(i, j)
-
-      var a = 0,
-        b = 0,
-        c = 0,
-        d = 0
-      if (i == 0 && j == 0) a = bevel
-      else if (i == gameSettings.boardW - 1 && j == 0) b = bevel
-      else if (i == gameSettings.boardW - 1 && j == gameSettings.boardH - 1) c = bevel
-      else if (i == 0 && j == gameSettings.boardH - 1) d = bevel
-      strokeWeight(2)
-      rect(i * unit, j * unit, unit, unit, a, b, c, d)
-      let cordinate = CellToPixel(createVector(i, j))
-      board[i][j].Shape(cordinate.x, cordinate.y)
-
-      if (selected != undefined) {
-        if (selected.CanMoveTo(i, j)) {
-          if (selected.CheckIntersections(i, j)) MarkCell(i, j, MARKTYPE.willDie)
-          //@Optemize - Only run CheckIntersections once (Even on drag)
-          else MarkCell(i, j, MARKTYPE.wontDie)
-        }
-      }
-    }
-  }
-}
-function CellColor(x, y) {
-  if ((x + y) % 2 == 0) fill(checkerColor1)
-  else fill(checkerColor2)
-  for (let t = 0; t < teams.length; t++) {
-    const team = teams[t]
-    if (team.base(x, y)) fill(gameSettings.teamColors[t].base)
-  }
-  if (selected == 0 || selected == undefined) return
-
-  if (selected.CanMoveTo(x, y)) {
-    fill(selectColor)
-  }
-}
-function MarkCell(x, y, markType) {
-  push()
-  switch (markType) {
-    case MARKTYPE.wontDie:
-      fill("#ccc99b")
-      strokeWeight(0)
-      ellipse(x * unit + unit / 2, y * unit + unit / 2, markSize)
-      break
-    case MARKTYPE.willDie:
-      stroke("#ccc99b")
-      strokeWeight(3)
-      line(
-        x * unit - markSize / 2 + unit / 2,
-        y * unit - markSize / 2 + unit / 2,
-        x * unit + markSize / 2 + unit / 2,
-        y * unit + markSize / 2 + unit / 2
-      )
-      line(
-        x * unit - markSize / 2 + unit / 2,
-        y * unit + markSize / 2 + unit / 2,
-        x * unit + markSize / 2 + unit / 2,
-        y * unit - markSize / 2 + unit / 2
-      )
-      break
-  }
-  pop()
-}
 function mouseDragged() {
   if (winner != undefined || !connected) return
   if (selected != undefined) {
@@ -292,26 +217,45 @@ function mouseDragged() {
   }
 }
 function mousePressed() {
+  Clicked()
+  return false
+}
+function touchStarted() {
+  Clicked()
+  return false
+}
+function Clicked() {
   if (winner != undefined || !connected) return
   if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
-
-  let joint = UpperJoint(int(mouseX / unit), int(mouseY / unit))
+  let joint = GetUpperJoint(GetMouseCell())
+  //console.log(IsTeamHead(joint))
   if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (localPlay || turn === team)) {
     selected = selected == undefined ? joint.chain : undefined
   }
 
   display = true
 }
+
 function mouseReleased() {
   if (!connected) return
   display = true
   if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
-  if (selected == undefined || selected.head == UpperJoint(int(mouseX / unit), int(mouseY / unit))) return
-  selected.Move(int(mouseX / unit), int(mouseY / unit))
+
+  if (selected == undefined || selected.head == GetUpperJoint(GetMouseCell())) return
+  let destination = GetMouseCell()
+  if (!localPlay) {
+    LogMove(gameID, selected.team, selected.head.pos, destination)
+  }
+  let couldMove = selected.Move(destination)
+
+  if (couldMove) NextTurn()
   selected = undefined
 }
 
-function UpperJoint(x, y) {
+function GetUpperJoint(cellCordinates) {
+  let x = cellCordinates.x,
+    y = cellCordinates.y
+
   let cell = board[x][y]
   if (cell == undefined || x < 0 || y < 0) return undefined
   for (let i = cell.content.length - 1; i >= 0; i--) {
@@ -322,12 +266,13 @@ function UpperJoint(x, y) {
   }
   return undefined
 }
-function JointShape(x, y, size) {
-  let posX = x * unit + unit / 2
-  let posY = y * unit + unit / 2
-  ellipse(posX, posY, size)
-  //rectMode(CENTER)
-  //rect(posX, posY, size, size, 5)
+function NextTurn() {
+  turn = turn == teams.length - 1 ? 1 : turn + 1
+}
+function ValueInside(x, value1, value2) {
+  let max = Math.max(value1, value2)
+  let min = Math.min(value1, value2)
+  return min < x && x < max
 }
 function IsLinesIntersecting(p0, p1, p2, p3) {
   let A1 = p1.y - p0.y,
@@ -342,27 +287,22 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
     //The lines are parallel
     if (p0.x == p1.x) {
       //Lines vertical
-      let ymax = Math.max(p2.y, p3.y)
-      let ymin = Math.min(p2.y, p3.y)
 
-      if (((ymin < p0.y && p0.y < ymax) || (ymin < p1.y && p1.y < ymax)) && p0.x == p2.x) {
+      if ((ValueInside(p0.y, p2.y, p3.y) || ValueInside(p1.y, p2.y, p3.y)) && p0.x == p2.x) {
         return true
       } else {
         return null
       }
     } else {
-      slope1 = A1 / B2
+      slope1 = A1 / B1
       slope2 = A2 / B2
 
       axe1 = -slope1 * p0.x + p0.y
       axe2 = -slope1 * p2.x + p2.y
 
-      let xmax = Math.max(p2.x, p3.x)
-      let xmin = Math.min(p2.x, p3.x)
-
       if (abs(slope1) == abs(slope2) && axe1 == axe2) {
         //Same line
-        if ((xmin < p0.x && p0.x < xmax) || (xmin < p1.x && p1.x < xmax)) {
+        if (ValueInside(p0.x, p2.x, p3.x) || ValueInside(p1.x, p2.x, p3.x)) {
           //Same linesegment
           return true
         }
@@ -389,12 +329,40 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
     return null
   }
 }
+function IsPointOnLineSegment(point, start, end) {
+  //@ implement this plz
+  return false
+  let A = end.y - start.y,
+    B = start.x - end.x,
+    intersectX,
+    intersectY
 
-function getLine(x1, y1, x2, y2, a, b, c) {
-  a = y1 - y2
-  b = x2 - x1
-  c = x1 * y2 - x2 * y1
-  return [a, b, c]
+  if (start.x == end.x) {
+    //Lines vertical
+    if (start.x != point.x) return false
+
+    if (ValueInside(point.y, start.y, end.y)) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    let slope = A / B,
+      axe = -slope * start.x + start.y
+
+    if (point.y == slope * point.x + axe) {
+      intersectX = point.x
+      intersectY = point.y
+    }
+  }
+  let rx0 = (intersectX - start.x) / (end.x - start.x),
+    ry0 = (intersectY - start.y) / (end.y - start.y)
+
+  if ((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) {
+    return true
+  } else {
+    return false
+  }
 }
 function CheckWin() {
   let winnerFound = false
@@ -439,10 +407,13 @@ function Win(team) {
 }
 
 function CellToPixel(cell) {
-  var result = createVector(cell.x * unit + unit / 2, cell.y * unit + unit / 2)
-  return result
+  var position = createVector(cell.x * unit + unit / 2, cell.y * unit + unit / 2)
+  return position
 }
 function PixelToCell(pos) {
-  let result = createVector(floor(pos.x / unit), floor(pos.y / unit))
-  return result
+  let cell = createVector(floor(pos.x / unit), floor(pos.y / unit))
+  return cell
+}
+function GetMouseCell() {
+  return PixelToCell(createVector(mouseX, mouseY))
 }
