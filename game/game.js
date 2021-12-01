@@ -274,7 +274,8 @@ function ValueInside(x, value1, value2) {
   let min = Math.min(value1, value2)
   return min < x && x < max
 }
-function IsLinesIntersecting(p0, p1, p2, p3) {
+
+function FindIntersectionPoint(p0, p1, p2, p3) {
   let A1 = p1.y - p0.y,
     B1 = p0.x - p1.x,
     C1 = A1 * p0.x + B1 * p0.y,
@@ -285,6 +286,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
 
   if (denominator == 0) {
     //The lines are parallel
+
     if (p0.x == p1.x) {
       //Lines vertical
 
@@ -300,7 +302,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
       axe1 = -slope1 * p0.x + p0.y
       axe2 = -slope1 * p2.x + p2.y
 
-      if (abs(slope1) == abs(slope2) && axe1 == axe2) {
+      if (abs(slope1) == abs(slope2) && abs(axe1) == abs(axe2)) {
         //Same line
         if (ValueInside(p0.x, p2.x, p3.x) || ValueInside(p1.x, p2.x, p3.x)) {
           //Same linesegment
@@ -329,41 +331,7 @@ function IsLinesIntersecting(p0, p1, p2, p3) {
     return null
   }
 }
-function IsPointOnLineSegment(point, start, end) {
-  //@ implement this plz
-  return false
-  let A = end.y - start.y,
-    B = start.x - end.x,
-    intersectX,
-    intersectY
 
-  if (start.x == end.x) {
-    //Lines vertical
-    if (start.x != point.x) return false
-
-    if (ValueInside(point.y, start.y, end.y)) {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    let slope = A / B,
-      axe = -slope * start.x + start.y
-
-    if (point.y == slope * point.x + axe) {
-      intersectX = point.x
-      intersectY = point.y
-    }
-  }
-  let rx0 = (intersectX - start.x) / (end.x - start.x),
-    ry0 = (intersectY - start.y) / (end.y - start.y)
-
-  if ((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) {
-    return true
-  } else {
-    return false
-  }
-}
 function CheckWin() {
   let winnerFound = false
   if (gameSettings.deathWin) {
