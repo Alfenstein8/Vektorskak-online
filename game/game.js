@@ -217,14 +217,6 @@ function mouseDragged() {
   }
 }
 function mousePressed() {
-  Clicked()
-  return false
-}
-function touchStarted() {
-  Clicked()
-  return false
-}
-function Clicked() {
   if (winner != undefined || !connected) return
   if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
   let joint = GetUpperJoint(GetMouseCell())
@@ -234,6 +226,7 @@ function Clicked() {
   }
 
   display = true
+  Clicked()
 }
 
 function mouseReleased() {
