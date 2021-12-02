@@ -226,7 +226,6 @@ function mousePressed() {
   }
 
   display = true
-  Clicked()
 }
 
 function mouseReleased() {

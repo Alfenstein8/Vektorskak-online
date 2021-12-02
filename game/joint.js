@@ -79,13 +79,21 @@ class Chain {
     for (let c = 0; c < aliveChains.length; c++) {
       const chain = aliveChains[c]
       if ((gameSettings.friendlyFire ? true : chain.team != this.team) || (gameSettings.selfharm ? chain == this : false)) {
-        for (let j = 1; j < chain.joints.length; j++) {
+        for (let j = 0; j < chain.joints.length; j++) {
           let start1 = this.head.pos
           let end1 = createVector(x, y)
-          let start2 = chain.joints[j - 1].pos
           let end2 = chain.joints[j].pos
-          if (FindIntersectionPoint(start1, end1, start2, end2) && !chain.dead) {
-            return FindIntersectionPoint(start1, end1, start2, end2)
+          if (j == 0) {
+            if (
+              (end2.x == start1.x && end2.x == end1.x && ValueInside(end2.y, start1.y, end1.y)) ||
+              (end2.y == start1.y && end2.y == end1.y && ValueInside(end2.x, start1.x, end1.x))
+            )
+              return end2
+          } else {
+            let start2 = chain.joints[j - 1].pos
+            if (FindIntersectionPoint(start1, end1, start2, end2) && !chain.dead) {
+              return FindIntersectionPoint(start1, end1, start2, end2)
+            }
           }
         }
       }
