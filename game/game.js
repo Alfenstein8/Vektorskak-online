@@ -291,11 +291,12 @@ function FindIntersectionPoint(p0, p1, p2, p3) {
       slope1 = A1 / B1
       slope2 = A2 / B2
 
-      axe1 = -slope1 * p0.x + p0.y
-      axe2 = -slope1 * p2.x + p2.y
+      axe1 = -slope1 * p1.x + p1.y
+      axe2 = -slope2 * p2.x + p2.y
 
-      if (abs(slope1) == abs(slope2) && abs(axe1) == abs(axe2)) {
+      if (abs(slope1) == abs(slope2) && axe1 == axe2) {
         //Same line
+        console.log("same")
         if (ValueInside(p0.x, p2.x, p3.x) || ValueInside(p1.x, p2.x, p3.x)) {
           //Same linesegment
           return true
