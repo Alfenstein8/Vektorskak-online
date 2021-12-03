@@ -84,11 +84,7 @@ class Chain {
           let end1 = createVector(x, y)
           let end2 = chain.joints[j].pos
           if (j == 0) {
-            if (
-              (end2.x == start1.x && end2.x == end1.x && ValueInside(end2.y, start1.y, end1.y)) ||
-              (end2.y == start1.y && end2.y == end1.y && ValueInside(end2.x, start1.x, end1.x))
-            )
-              return end2
+            if (IsPointInside(end2, start1, end1)) return end2
           } else {
             let start2 = chain.joints[j - 1].pos
             if (FindIntersectionPoint(start1, end1, start2, end2) && !chain.dead) {

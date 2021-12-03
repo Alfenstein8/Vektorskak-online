@@ -275,7 +275,7 @@ function FindIntersectionPoint(p0, p1, p2, p3) {
     B2 = p2.x - p3.x,
     C2 = A2 * p2.x + B2 * p2.y,
     denominator = A1 * B2 - A2 * B1
-
+  if (IsPointInside(p1, p2, p3)) return p1
   if (denominator == 0) {
     //The lines are parallel
 
@@ -323,7 +323,26 @@ function FindIntersectionPoint(p0, p1, p2, p3) {
     return null
   }
 }
+function IsPointInside(point, start, end) {
+  let diff1x = point.x - start.x
+  let diff1y = point.y - start.y
 
+  let diff2x = point.x - end.x
+  let diff2y = point.y - end.y
+
+  if (abs(diff1x) == abs(diff1y) && abs(diff2x) == abs(diff2y) && ValueInside(point.x, start.x, end.x) && ValueInside(point.y, start.y, end.y)) {
+    // Diagonal line
+    return point
+  }
+
+  if (
+    (point.x == start.x && point.x == end.x && ValueInside(point.y, start.y, end.y)) ||
+    (point.y == start.y && point.y == end.y && ValueInside(point.x, start.x, end.x))
+  ) {
+    //horizontal or vertical line
+    return point
+  }
+}
 function CheckWin() {
   let winnerFound = false
   if (gameSettings.deathWin) {
