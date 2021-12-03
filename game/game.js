@@ -296,7 +296,6 @@ function FindIntersectionPoint(p0, p1, p2, p3) {
 
       if (abs(slope1) == abs(slope2) && axe1 == axe2) {
         //Same line
-        console.log("same")
         if (ValueInside(p0.x, p2.x, p3.x) || ValueInside(p1.x, p2.x, p3.x)) {
           //Same linesegment
           return true
