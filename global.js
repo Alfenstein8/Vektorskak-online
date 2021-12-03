@@ -19,7 +19,7 @@ const defaultGameSettings = {
   selfharm: true, // is it possible for a chain to kill itself?
   deathWin: true, //Can you win by killing all the other teams chains?
   baseWin: true, //Can you win by reaching the other teams base?
-  defaultMove: 5, //The maximum move reach for a chain
+  defaultMove: 3, //The maximum move reach for a chain
   boardW: 9,
   boardH: 15,
   setup: [
