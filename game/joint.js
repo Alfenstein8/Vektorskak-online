@@ -43,7 +43,7 @@ class Chain {
       fill(gameSettings.teamColors[this.team].head)
       if (i == this.joints.length - 1) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 2)
-      } else if (i == this.joints.length - 2 && this.joints[i].pos.x - this.baseCell.x + this.joints[i].pos.y - this.baseCell.y != 0) {
+      } else if (i == this.joints.length - 2 && !(this.joints[i].pos.x == this.baseCell.x && this.joints[i].pos.y == this.baseCell.y)) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 3)
       }
     }
@@ -60,7 +60,7 @@ class Chain {
     let inter = this.CheckIntersections(x, y)
 
     if (joint != undefined) {
-      if (joint.chain.baseCell.x - x + joint.chain.baseCell.y - y != 0 && inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y)
+      if (!(joint.chain.baseCell.x == x && joint.chain.baseCell.y == y) && inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y)
         joint.chain.Die()
       else die = true
 
