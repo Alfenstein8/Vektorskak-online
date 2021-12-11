@@ -36,11 +36,32 @@ var moveKey = undefined
 var turn = 1
 var gameSettings = defaultGameSettings
 
+var sureRematch = false
+function DecideRematch() {
+  if (!sureRematch) {
+    document.getElementById("rematchButton").innerHTML = "sure?"
+    sureRematch = true
+    setTimeout(() => {
+      document.getElementById("rematchButton").innerHTML = "rematch"
+      sureRematch = false
+    }, 2000)
+    return
+  }
+  if (localPlay) {
+    if (gameLog.length != 0) SetupNewGame()
+  } else {
+    RequestRematch(gameID)
+  }
+}
 //#region
 function SetupNewGame() {
   aliveChains = []
   deadChains = []
+  gameLog = []
   turn = 1
+
+  rematchButton.mousePressed(DecideRematch)
+
   document.getElementById("gameCode").innerHTML = gameID
   localPlay = gameID == "local"
   if (localPlay) {
@@ -80,6 +101,12 @@ function SetupNewGame() {
 
         connectedPlayers[player.key].element.remove()
         delete connectedPlayers[player.key]
+      })
+      OnRematch(gameID, () => {
+        ResetGame(gameID)
+      })
+      GameIsReset(gameID, () => {
+        SetupNewGame()
       })
     } else {
       document.getElementById("gameCode").innerHTML = "Game does not exist"

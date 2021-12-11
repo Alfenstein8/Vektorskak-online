@@ -41,7 +41,7 @@ button {
   left: 0px;
   top: 0px;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-auto-flow: column;
 }
 .cornerButtons button {
   margin: 25px 0px 0px 25px;

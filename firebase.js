@@ -17,6 +17,7 @@ async function JoinGame(gameID, User, team) {
   let gameRef = GetGameRef(gameID)
   let playerSnap = await gameRef.child("players").get()
   team = team == undefined ? FindTeam(playerSnap, User) : team
+  gameRef.child("players").child(User.uid).onDisconnect().remove()
   await gameRef
     .child("players")
     .child(User.uid)
@@ -25,10 +26,22 @@ async function JoinGame(gameID, User, team) {
       team: team,
     })
     .then(() => {
-      gameRef.child("players").child(User.uid).onDisconnect().remove()
       console.log("connected to " + gameID)
     })
     .catch((error) => console.error(error))
+  if (team != 0) {
+    await gameRef
+      .child("teams")
+      .child(team)
+      .set({
+        uid: User.uid,
+      })
+      .then(() => {
+        gameRef.child("teams").child(team).onDisconnect().remove()
+      })
+      .catch((error) => console.error(error))
+  }
+
   return Promise.resolve(team)
 }
 function LeaveGame() {
@@ -36,6 +49,7 @@ function LeaveGame() {
   if (ref == undefined) return
   RemoveListenersFromGame(gameID)
   ref.child("players").child(user.uid).remove()
+  if (team != 0) ref.child("teams").child(team).remove()
   let users = document.querySelectorAll("#users > *")
   for (let user of users) {
     user.remove()
@@ -73,9 +87,13 @@ async function CreateNewGame(User, settings) {
   settings.owner = User.uid
   let gameRef
   gameID = GenerateCode(6)
-  gameRef = db.child("games").child(gameID).child("settings")
-  await gameRef.set(settings)
+  gameRef = GetGameRef(gameID)
+  await gameRef.child("settings").set(settings)
   return gameRef
+}
+
+function RequestRematch(gameID) {
+  GetGameRef(gameID).child("teams").child(team).set({ uid: user.uid, rematch: true })
 }
 function LogMove(gameID, team, from, to) {
   let log = GetGameRef(gameID).child("log")
@@ -148,12 +166,44 @@ function PlayerLeft(gameID, callback) {
       callback(player)
     })
 }
+let team1Rematch = false,
+  team2Rematch = false
+function OnRematch(gameID, callback) {
+  GetGameRef(gameID)
+    .child("teams")
+    .child("1")
+    .child("rematch")
+    .on("value", (snap) => {
+      team1Rematch = snap.val()
+      if (team1Rematch && team2Rematch) callback()
+    })
+  GetGameRef(gameID)
+    .child("teams")
+    .child("2")
+    .child("rematch")
+    .on("value", (snap) => {
+      team2Rematch = snap.val()
+      if (team1Rematch && team2Rematch) callback()
+    })
+}
+function ResetGame(gameID) {
+  GetGameRef(gameID).child("log").set({})
+}
 
 function LogAdded(gameID, callback) {
   GetGameRef(gameID)
     .child("log")
     .on("child_added", (snap) => {
       callback(snap.val(), snap.key)
+    })
+}
+
+function GameIsReset(gameID, callback) {
+  GetGameRef(gameID)
+    .child("log")
+    .on("value", (snap) => {
+      callback()
+      console.log("reset")
     })
 }
 

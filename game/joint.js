@@ -58,7 +58,8 @@ class Chain {
     let joint = GetUpperJoint(destination)
     let self = false
     let inter = this.CheckIntersections(x, y)
-
+    let log = { team: this.team, from: { x: this.head.pos.x, y: this.head.pos.y }, to: { x: destination.x, y: destination.y } }
+    if (localPlay) gameLog.push(log)
     if (joint != undefined) {
       if (!(joint.chain.baseCell.x == x && joint.chain.baseCell.y == y) && inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y)
         joint.chain.Die()

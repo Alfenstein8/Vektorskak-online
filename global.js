@@ -83,6 +83,7 @@ var homepage, gamepage, rulespage
 
 function setup() {
   //Runs when page loades
+  rematchButton = select("#rematchButton")
   homepage = select("#homepage")
   gamepage = select("#gamepage")
   rulespage = select("#rulespage")
@@ -121,5 +122,22 @@ function ChangePage(page) {
       homepage.addClass("hidden")
       rulespage.removeClass("hidden")
       break
+  }
+}
+class Timer {
+  constructor(startTime) {
+    this.resetTime = startTime * 1000
+    this.time = this.resetTime
+    this.done = false
+  }
+
+  clock() {
+    if (this.time > 0) this.time -= deltaTime
+    else this.done = true
+  }
+
+  reset() {
+    this.time = this.resetTime
+    this.done = false
   }
 }
