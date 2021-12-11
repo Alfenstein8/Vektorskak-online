@@ -104,14 +104,20 @@ function SetupNewGame() {
       })
       OnRematch(gameID, () => {
         ResetGame(gameID)
-      })
-      GameIsReset(gameID, () => {
+        RemoveListenersFromGame(gameID)
+        DeleteUserList()
         SetupNewGame()
       })
     } else {
       document.getElementById("gameCode").innerHTML = "Game does not exist"
     }
   })
+}
+function DeleteUserList() {
+  let users = document.querySelectorAll("#users > *")
+  for (let user of users) {
+    user.remove()
+  }
 }
 function UpdateAllText() {
   document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)

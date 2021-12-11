@@ -49,11 +49,8 @@ function LeaveGame() {
   if (ref == undefined) return
   RemoveListenersFromGame(gameID)
   ref.child("players").child(user.uid).remove()
-  if (team != 0) ref.child("teams").child(team).remove()
-  let users = document.querySelectorAll("#users > *")
-  for (let user of users) {
-    user.remove()
-  }
+  if (team != 0 && !localPlay) ref.child("teams").child(team).remove()
+  DeleteUserList()
   console.log("disconnected from " + gameID)
 }
 function RemoveListenersFromGame(gameID) {
@@ -61,6 +58,8 @@ function RemoveListenersFromGame(gameID) {
   ref.child("players").off("child_removed")
   ref.child("players").off("child_added")
   ref.child("log").off("child_added")
+  ref.child("teams").child("1").child("rematch").off("value")
+  ref.child("teams").child("2").child("rematch").off("value")
 }
 function FindTeam(playerSnap, User) {
   if (playerSnap.exists()) {
@@ -187,7 +186,7 @@ function OnRematch(gameID, callback) {
     })
 }
 function ResetGame(gameID) {
-  GetGameRef(gameID).child("log").set({})
+  GetGameRef(gameID).child("log").remove()
 }
 
 function LogAdded(gameID, callback) {
@@ -195,15 +194,6 @@ function LogAdded(gameID, callback) {
     .child("log")
     .on("child_added", (snap) => {
       callback(snap.val(), snap.key)
-    })
-}
-
-function GameIsReset(gameID, callback) {
-  GetGameRef(gameID)
-    .child("log")
-    .on("value", (snap) => {
-      callback()
-      console.log("reset")
     })
 }
 
