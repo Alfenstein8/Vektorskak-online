@@ -43,7 +43,7 @@ class Chain {
       fill(gameSettings.teamColors[this.team].head)
       if (i == this.joints.length - 1) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 2)
-      } else if (i == this.joints.length - 2 && !(this.joints[i].pos.x == this.baseCell.x && this.joints[i].pos.y == this.baseCell.y)) {
+      } else if (this.joints[i].chain.neck == this.joints[i]) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 3)
       }
     }
@@ -61,9 +61,10 @@ class Chain {
     let log = { team: this.team, from: { x: this.head.pos.x, y: this.head.pos.y }, to: { x: destination.x, y: destination.y } }
     if (localPlay) gameLog.push(log)
     if (joint != undefined) {
-      if (!(joint.chain.baseCell.x == x && joint.chain.baseCell.y == y) && inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y)
-        joint.chain.Die()
-      else die = true
+      if (joint.chain.neck != undefined) {
+        if (inter.x == joint.chain.neck.pos.x && inter.y == joint.chain.neck.pos.y) joint.chain.Die()
+        else die = true
+      } else die = true
 
       if (joint.chain == this) self = true
     } else {
@@ -162,7 +163,7 @@ class Joint {
 
     board[x][y].content.push(this)
     this.chain.head = this
-    if (this.chain.joints.length >= 2) {
+    if (this.chain.joints.length >= 3) {
       this.chain.neck = this.chain.joints[this.chain.joints.length - 2]
     }
   }
