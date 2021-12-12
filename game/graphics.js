@@ -34,7 +34,20 @@ function UpdateTeamUI() {
   document.getElementById("team").style.color = gameSettings.teamColors[team].color
 }
 function UpdateTurnUI() {
-  document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
+  if (localPlay) {
+    if (turn == 1) {
+      document.getElementById("turn").innerHTML = "Blue team"
+    } else {
+      document.getElementById("turn").innerHTML = "Red team"
+    }
+  } else {
+    document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
+  }
+  if (turn == 1) {
+    document.getElementById("turn").style.color = gameSettings.teamColors[1].color
+  } else {
+    document.getElementById("turn").style.color = gameSettings.teamColors[2].color
+  }
 }
 function MarkCell(x, y, markType) {
   push()
