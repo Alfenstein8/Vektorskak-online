@@ -9,6 +9,6 @@ class Cell {
     textAlign(CENTER, CENTER)
     fill(0)
     textSize(unit / 2)
-    text(this.extraMovement + gameSettings.defaultMove, x, y)
+    ShowText(this.extraMovement + gameSettings.defaultMove, x, y)
   }
 }

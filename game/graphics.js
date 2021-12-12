@@ -29,6 +29,13 @@ function DrawBoard() {
     }
   }
 }
+function UpdateTeamUI() {
+  document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)
+  document.getElementById("team").style.color = gameSettings.teamColors[team].color
+}
+function UpdateTurnUI() {
+  document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
+}
 function MarkCell(x, y, markType) {
   push()
   switch (markType) {
@@ -77,11 +84,19 @@ function CellColor(x, y) {
   }
 }
 function DrawJointDragging() {
-  const mouseCell = createVector((mouseX - unit / 2) / unit, (mouseY - unit / 2) / unit)
+  const mouseCell = createVector((GetMousePos().x - unit / 2) / unit, (GetMousePos().y - unit / 2) / unit)
   strokeWeight(lineWidth)
   stroke(gameSettings.teamColors[selected.team].color)
-  line(selected.head.pos.x * unit + unit / 2, selected.head.pos.y * unit + unit / 2, mouseX, mouseY)
+  line(selected.head.pos.x * unit + unit / 2, selected.head.pos.y * unit + unit / 2, GetMousePos().x, GetMousePos().y)
   fill(gameSettings.teamColors[selected.team].color)
   strokeWeight(0)
   JointShape(mouseCell.x, mouseCell.y, jointSize)
+}
+
+function ShowText(_text, x, y) {
+  push()
+  translate(x, y)
+  if (team == 1) rotate(PI)
+  text(_text, 0, 0)
+  pop()
 }

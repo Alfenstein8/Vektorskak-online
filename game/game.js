@@ -59,7 +59,8 @@ function SetupNewGame() {
   deadChains = []
   gameLog = []
   turn = 1
-
+  moveKey = undefined
+  winner = undefined
   rematchButton.mousePressed(DecideRematch)
 
   document.getElementById("gameCode").innerHTML = gameID
@@ -82,7 +83,8 @@ function SetupNewGame() {
       gameSettings = _settings
       JoinGame(gameID, user).then((t) => {
         team = t
-        UpdateAllText()
+        UpdateTeamUI()
+        UpdateTurnUI()
         connected = true
         ReadySetup()
       })
@@ -119,14 +121,12 @@ function DeleteUserList() {
     user.remove()
   }
 }
-function UpdateAllText() {
-  document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)
-  document.getElementById("team").style.color = gameSettings.teamColors[team].color
-  document.getElementById("turn").innerHTML = team == 1 ? "Your turn" : "Their turn"
-}
+
 function ReadySetup() {
   canvas = createCanvas(gameSettings.boardW * size, gameSettings.boardH * size)
   canvas.parent("gamepage")
+  if (team == 1) canvas.style("transform", "rotate(180deg)")
+  else canvas.style("transform", "rotate(0deg)")
   FormatteamColors()
 
   selectColor = color(selectColor)
@@ -153,11 +153,12 @@ function ReadySetup() {
   SetCanvas()
   if (localPlay) return
   LogAdded(gameID, (log, logID) => {
+    console.log(logID, moveKey)
     gameLog.push(log)
     if (logID != moveKey || localPlay) {
+      moveKey = logID
       ApplyMoveFromLog(log)
     }
-    UpdateAllText()
   })
 }
 function ApplyMoveFromLog(log) {
@@ -166,7 +167,6 @@ function ApplyMoveFromLog(log) {
     document.getElementById("gameCode").innerHTML = "Something went wrong. Make a new game"
     return
   }
-
   joint.chain.Move(log.to)
   NextTurn()
 }
@@ -226,7 +226,7 @@ function draw() {
     textAlign(CENTER, CENTER)
     textSize(unit * 1)
     fill(gameSettings.teamColors[index].color)
-    text("Player " + index + " wins", width / 2, height / 2)
+    ShowText("Player " + index + " wins", width / 2, height / 2)
   }
 }
 function Display() {
@@ -251,7 +251,8 @@ function mouseDragged() {
 }
 function mousePressed() {
   if (winner != undefined || !connected) return
-  if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
+  if (GetMousePos().x < 0 || GetMousePos().y < 0 || GetMousePos().x > gameSettings.boardW * unit || GetMousePos().y > gameSettings.boardH * unit)
+    return
   let joint = GetUpperJoint(GetMouseCell())
   //console.log(IsTeamHead(joint))
   if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (localPlay || turn === team)) {
@@ -264,16 +265,20 @@ function mousePressed() {
 function mouseReleased() {
   if (!connected) return
   display = true
-  if (mouseX < 0 || mouseY < 0 || mouseX > gameSettings.boardW * unit || mouseY > gameSettings.boardH * unit) return
+  if (GetMousePos().x < 0 || GetMousePos().y < 0 || GetMousePos().x > gameSettings.boardW * unit || GetMousePos().y > gameSettings.boardH * unit)
+    return
 
   if (selected == undefined || selected.head == GetUpperJoint(GetMouseCell())) return
   let destination = GetMouseCell()
-  if (!localPlay) {
-    LogMove(gameID, selected.team, selected.head.pos, destination)
-  }
-  let couldMove = selected.Move(destination)
 
-  if (couldMove) NextTurn()
+  let startpos = selected.head.pos
+  if (selected.CanMoveTo(destination.x, destination.y)) {
+    selected.Move(destination)
+    if (!localPlay) {
+      LogMove(gameID, selected.team, startpos, destination)
+    }
+    NextTurn()
+  }
   selected = undefined
 }
 
@@ -293,6 +298,8 @@ function GetUpperJoint(cellCordinates) {
 }
 function NextTurn() {
   turn = turn == teams.length - 1 ? 1 : turn + 1
+
+  UpdateTurnUI()
 }
 function ValueInside(x, value1, value2) {
   let max = Math.max(value1, value2)
@@ -420,12 +427,19 @@ function Win(team) {
 
 function CellToPixel(cell) {
   var position = createVector(cell.x * unit + unit / 2, cell.y * unit + unit / 2)
+  if (team == 1) position = createVector(gameSettings.boardW * unit - position.x, gameSettings.boardH * unit - position.y)
   return position
 }
 function PixelToCell(pos) {
   let cell = createVector(floor(pos.x / unit), floor(pos.y / unit))
+  if (team == 1) cell = createVector(gameSettings.boardW - cell.x - 1, gameSettings.boardH - cell.y - 1)
   return cell
 }
 function GetMouseCell() {
   return PixelToCell(createVector(mouseX, mouseY))
+}
+function GetMousePos() {
+  let pos = createVector(mouseX, mouseY)
+  if (team == 1) pos = createVector(gameSettings.boardW * unit - pos.x, gameSettings.boardH * unit - pos.y)
+  return pos
 }
