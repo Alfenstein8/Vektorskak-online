@@ -163,7 +163,8 @@ class Joint {
 
     board[x][y].content.push(this)
     this.chain.head = this
-    if (this.chain.joints.length >= 3) {
+    let second = this.chain.joints[this.chain.joints.length - 2]
+    if (this.chain.joints.length >= 2 && !(second.pos.x == this.chain.baseCell.x && second.pos.y == this.chain.baseCell.y)) {
       this.chain.neck = this.chain.joints[this.chain.joints.length - 2]
     }
   }
