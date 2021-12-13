@@ -51,13 +51,13 @@ function UpdateTurnUI() {
   }
 }
 function UpdateTeamNames(colorize, first) {
-  topTeamName.style("font-size", "40px")
+  topTeamName.style("font-size", "30px")
   while (topTeamName.size().width > canvas.size().width) {
     let fontsize = window.getComputedStyle(document.getElementById("topTeamName")).getPropertyValue("font-size")
     topTeamName.style("font-size", fontsize.replace("px", "") - 2 + "px")
   }
 
-  bottomTeamName.style("font-size", "40px")
+  bottomTeamName.style("font-size", "30px")
   while (bottomTeamName.size().width > canvas.size().width) {
     let fontsize = window.getComputedStyle(document.getElementById("bottomTeamName")).getPropertyValue("font-size")
     bottomTeamName.style("font-size", fontsize.replace("px", "") - 2 + "px")
