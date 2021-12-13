@@ -37,6 +37,7 @@ button {
   border-radius: 5px;
 }
 .cornerButtons {
+  z-index: 1;
   position: fixed;
   left: 0px;
   top: 0px;

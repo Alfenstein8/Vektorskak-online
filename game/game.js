@@ -6,7 +6,7 @@ var board = []
 var checkerColor1 = 255,
   checkerColor2 = 210
 
-var lineWidth = 10
+var lineWidth = size / 4
 var jointSize = size / 1.25
 var selectColor = "#FFFCC1"
 var markSize = size / 2
@@ -61,12 +61,22 @@ function SetupNewGame() {
   turn = 1
   moveKey = undefined
   winner = undefined
+  topTeamName.removeAttribute("style")
+  topTeamName.html("Waiting for player...")
+  bottomTeamName.removeAttribute("style")
+  bottomTeamName.html("Waiting for player...")
+
   rematchButton.mousePressed(DecideRematch)
 
-  document.getElementById("gameCode").innerHTML = gameID
+  document.getElementById("gameCode").innerHTML = "Code: " + gameID
   localPlay = gameID == "local"
+
   if (localPlay) {
+    topTeamName.html("")
+    bottomTeamName.html("")
     connected = true
+    team = 2
+    UpdateTurnUI()
     ReadySetup()
     return
   }
@@ -83,25 +93,35 @@ function SetupNewGame() {
       gameSettings = _settings
       JoinGame(gameID, user).then((t) => {
         team = t
-        UpdateTeamUI()
         UpdateTurnUI()
         connected = true
         ReadySetup()
-      })
-      PlayerJoined(gameID, (player) => {
-        let child = createDiv('<h2 id="user">' + player.val().username + "</h2>")
-        select("#users").child(child)
-        connectedPlayers[player.key] = {
-          user: player,
-          element: child,
-        }
-        child.style("color", gameSettings.teamColors[player.val().team].color)
+        PlayerJoined(gameID, (player) => {
+          let child
+          if ((player.val().team == team && team != 0) || (player.val().team == 2 && team == 0)) {
+            child = bottomTeamName
+          } else if (player.val().team == 2 || player.val().team == 1) {
+            child = topTeamName
+          } else {
+            child = createP(player.val().username)
+            select("#users").child(child)
+          }
+
+          child.html(player.val().username)
+          connectedPlayers[player.key] = {
+            user: player.val(),
+            element: child,
+          }
+          UpdateTeamNames()
+        })
       })
 
       PlayerLeft(gameID, (player) => {
+        connectedPlayers[player.key].element.removeAttribute("style")
         if (player.key == user.uid) JoinGame(gameID, user, team)
-
-        connectedPlayers[player.key].element.remove()
+        if (connectedPlayers[player.key].user.team != 0) connectedPlayers[player.key].element.html("Waiting for player...")
+        else connectedPlayers[player.key].element.remove()
+        connectedPlayers[player.key].element.style("color", "white")
         delete connectedPlayers[player.key]
       })
       OnRematch(gameID, () => {
@@ -124,9 +144,12 @@ function DeleteUserList() {
 
 function ReadySetup() {
   canvas = createCanvas(gameSettings.boardW * size, gameSettings.boardH * size)
-  canvas.parent("gamepage")
-  if (team == 1) canvas.style("transform", "rotate(180deg)")
-  else canvas.style("transform", "rotate(0deg)")
+  canvas.parent("board")
+  canvas.style("position", "relative")
+  canvas.style("height", "auto")
+  canvas.style("width", "auto")
+  if (team != 1 || localPlay) canvas.style("transform", "rotate(0deg)")
+  else canvas.style("transform", "rotate(180deg)")
   FormatteamColors()
 
   selectColor = color(selectColor)
@@ -153,7 +176,6 @@ function ReadySetup() {
   SetCanvas()
   if (localPlay) return
   LogAdded(gameID, (log, logID) => {
-    console.log(logID, moveKey)
     gameLog.push(log)
     if (logID != moveKey || localPlay) {
       moveKey = logID
@@ -203,9 +225,11 @@ function SetCanvas() {
   size = window.innerHeight / boardSize
   try {
     canvas.resize(gameSettings.boardW * size, gameSettings.boardH * size)
-    canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2)
     unit = canvas.width / gameSettings.boardW
     jointSize = size / 1.25
+    lineWidth = size / 4
+    markSize = size / 2
+    UpdateTeamNames(false)
     Display()
   } catch (error) {}
 }

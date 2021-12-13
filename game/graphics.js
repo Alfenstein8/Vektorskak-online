@@ -14,7 +14,7 @@ function DrawBoard() {
       else if (i == gameSettings.boardW - 1 && j == 0) b = bevel
       else if (i == gameSettings.boardW - 1 && j == gameSettings.boardH - 1) c = bevel
       else if (i == 0 && j == gameSettings.boardH - 1) d = bevel
-      strokeWeight(2)
+      strokeWeight(size / 20)
       rect(i * unit, j * unit, unit, unit, a, b, c, d)
       let cordinate = CellToPixel(createVector(i, j))
       board[i][j].Shape(cordinate.x, cordinate.y)
@@ -29,24 +29,47 @@ function DrawBoard() {
     }
   }
 }
-function UpdateTeamUI() {
-  document.getElementById("team").innerHTML = "You are " + (team == 0 ? "a spectator" : "team: " + team)
-  document.getElementById("team").style.color = gameSettings.teamColors[team].color
-}
 function UpdateTurnUI() {
-  if (localPlay) {
-    if (turn == 1) {
-      document.getElementById("turn").innerHTML = "Blue team"
-    } else {
-      document.getElementById("turn").innerHTML = "Red team"
-    }
+  let lineUpLeft, lineDownLeft, lineUpRight, lineDownRight
+  lineUpLeft = select("#turnUp")
+  lineDownLeft = select("#turnDown")
+  lineUpRight = select("#rightTurnUp")
+  lineDownRight = select("#rightTurnDown")
+  let up = turn == 1
+
+  if (team == 1) up = !up
+  if (up) {
+    lineUpLeft.style("background-color", gameSettings.teamColors[turn].color)
+    lineUpRight.style("background-color", gameSettings.teamColors[turn].color)
+    lineDownLeft.style("background-color", "grey")
+    lineDownRight.style("background-color", "grey")
   } else {
-    document.getElementById("turn").innerHTML = turn == team ? "Your turn" : "Their turn"
+    lineDownLeft.style("background-color", gameSettings.teamColors[turn].color)
+    lineDownRight.style("background-color", gameSettings.teamColors[turn].color)
+    lineUpLeft.style("background-color", "grey")
+    lineUpRight.style("background-color", "grey")
   }
-  if (turn == 1) {
-    document.getElementById("turn").style.color = gameSettings.teamColors[1].color
-  } else {
-    document.getElementById("turn").style.color = gameSettings.teamColors[2].color
+}
+function UpdateTeamNames(colorize, first) {
+  topTeamName.style("font-size", "40px")
+  while (topTeamName.size().width > canvas.size().width) {
+    let fontsize = window.getComputedStyle(document.getElementById("topTeamName")).getPropertyValue("font-size")
+    topTeamName.style("font-size", fontsize.replace("px", "") - 2 + "px")
+  }
+
+  bottomTeamName.style("font-size", "40px")
+  while (bottomTeamName.size().width > canvas.size().width) {
+    let fontsize = window.getComputedStyle(document.getElementById("bottomTeamName")).getPropertyValue("font-size")
+    bottomTeamName.style("font-size", fontsize.replace("px", "") - 2 + "px")
+  }
+  if (colorize == undefined || colorize) {
+    if (team == 1) {
+      if (!first) topTeamName.style("color", gameSettings.teamColors[2].color)
+      bottomTeamName.style("color", gameSettings.teamColors[1].color)
+    } else {
+      if (!first) topTeamName.style("color", gameSettings.teamColors[1].color)
+      bottomTeamName.style("color", gameSettings.teamColors[2].color)
+    }
   }
 }
 function MarkCell(x, y, markType) {

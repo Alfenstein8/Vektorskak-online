@@ -80,9 +80,11 @@ const defaultGameSettings = {
   ],
 }
 var homepage, gamepage, rulespage
-
+var topTeamName, bottomTeamName
 function setup() {
   //Runs when page loades
+  topTeamName = select("#topTeamName")
+  bottomTeamName = select("#bottomTeamName")
   rematchButton = select("#rematchButton")
   homepage = select("#homepage")
   gamepage = select("#gamepage")
