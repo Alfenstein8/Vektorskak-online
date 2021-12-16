@@ -2,13 +2,9 @@ var canvas
 const boardSize = 20
 var size = window.innerHeight / boardSize
 var board = []
-//#region appearance
-var checkerColor1 = 255,
-  checkerColor2 = 210
 
 var lineWidth = size / 4
 var jointSize = size / 1.25
-var selectColor = "#FFFCC1"
 var markSize = size / 2
 //#endregion
 
@@ -55,6 +51,8 @@ function DecideRematch() {
 }
 //#region
 function SetupNewGame() {
+  defaultGameSettings.teamColors[1] = teamColors.blue
+  defaultGameSettings.teamColors[2] = teamColors.red
   aliveChains = []
   deadChains = []
   gameLog = []
@@ -151,8 +149,6 @@ function ReadySetup() {
   if (team != 1 || localPlay) canvas.style("transform", "rotate(0deg)")
   else canvas.style("transform", "rotate(180deg)")
   FormatteamColors()
-
-  selectColor = color(selectColor)
   unit = canvas.width / gameSettings.boardW
   for (let i = 0; i < gameSettings.boardW; i++) {
     board[i] = new Array(gameSettings.boardH)
@@ -249,7 +245,7 @@ function draw() {
     strokeWeight(1)
     textAlign(CENTER, CENTER)
     textSize(unit * 1)
-    fill(gameSettings.teamColors[index].color)
+    fill(gameSettings.teamColors[index].normal)
     ShowText("Player " + index + " wins", width / 2, height / 2)
   }
 }

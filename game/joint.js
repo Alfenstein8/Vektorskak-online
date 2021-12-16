@@ -14,11 +14,11 @@ class Chain {
   }
   Draw() {
     if (this.dead) {
-      fill(gameSettings.teamColors[this.team].dead)
-      stroke(gameSettings.teamColors[this.team].dead)
+      fill(gameSettings.teamColors[this.team].grey)
+      stroke(gameSettings.teamColors[this.team].grey)
     } else {
-      fill(gameSettings.teamColors[this.team].color)
-      stroke(gameSettings.teamColors[this.team].color)
+      fill(gameSettings.teamColors[this.team].normal)
+      stroke(gameSettings.teamColors[this.team].normal)
     }
     for (let i = 0; i < this.joints.length; i++) {
       strokeWeight(lineWidth)
@@ -40,7 +40,7 @@ class Chain {
     }
     for (let i = 0; i < this.joints.length; i++) {
       strokeWeight(0)
-      fill(gameSettings.teamColors[this.team].head)
+      fill(gameSettings.teamColors[this.team].dark)
       if (i == this.joints.length - 1) {
         JointShape(this.joints[i].pos.x, this.joints[i].pos.y, jointSize / 2)
       } else if (this.joints[i].chain.neck == this.joints[i]) {

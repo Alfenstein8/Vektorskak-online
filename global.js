@@ -7,6 +7,7 @@ const MARKTYPE = {
   willDie: 0,
   wontDie: 1,
 }
+
 const defaultGameSettings = {
   owner: 0, //Owner of the game (server)
   spectatorsAllowed: 5, //Number of the maximum spectators in a game
@@ -60,22 +61,22 @@ const defaultGameSettings = {
       // base: "#777E8B",
       // dead: "#565B65",
       // head: "#0A0A0C",
-      color: "#FFFFFF",
-      base: "#FFFFFF",
-      dead: "#FFFFFF",
-      head: "#FFFFFF",
+      normal: "#FFFFFF",
+      light: "#FFFFFF",
+      grey: "#FFFFFF",
+      dark: "#FFFFFF",
     },
     {
-      color: "#0294D4",
-      base: "#9EE1F7",
-      dead: "#46778B",
-      head: "#015E87",
+      normal: "#0294D4",
+      light: "#9EE1F7",
+      grey: "#46778B",
+      dark: "#015E87",
     },
     {
-      color: "#F24345",
-      base: "#FDB6B7",
-      dead: "#8E4849",
-      head: "#A52D2F",
+      normal: "#F24345",
+      light: "#FDB6B7",
+      grey: "#8E4849",
+      dark: "#A52D2F",
     },
   ],
 }
