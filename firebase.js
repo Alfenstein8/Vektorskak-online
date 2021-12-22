@@ -12,6 +12,18 @@ var firebaseConfig = {
 var app = firebase.initializeApp(firebaseConfig)
 
 var db = firebase.database().ref()
+function GetAllGames(callback) {
+  db.child("games")
+    .get()
+    .then((snap) => {
+      callback(snap.val())
+    })
+}
+function GameAdded(callback) {
+  db.child("games").on("child_added", (game) => {
+    callback(game.key)
+  })
+}
 
 async function JoinGame(gameID, User, team) {
   let gameRef = GetGameRef(gameID)
@@ -24,6 +36,7 @@ async function JoinGame(gameID, User, team) {
     .set({
       username: User.displayName,
       team: team,
+      skin: userProfile,
     })
     .then(() => {
       console.log("connected to " + gameID)
@@ -58,6 +71,7 @@ function RemoveListenersFromGame(gameID) {
   ref.child("players").off("child_removed")
   ref.child("players").off("child_added")
   ref.child("log").off("child_added")
+  ref.child("games").off("child_added")
   ref.child("teams").child("1").child("rematch").off("value")
   ref.child("teams").child("2").child("rematch").off("value")
 }

@@ -1,10 +1,120 @@
-#divider {
+/* Profile */
+#profileBox {
+  box-sizing: border-box;
   width: 100%;
-  border-top: 3px solid white;
-  margin-top: 75px;
+  height: fit-content;
+  padding: 0px;
+  display: grid;
+  gap: 25px;
+  justify-content: center;
 }
-#new {
-  margin: 0;
+
+#profileBox h2 {
+  margin: 0px;
+  text-align: center;
+}
+#profileBox hr {
+  margin-top: 0px;
+}
+#colors {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 10px;
+}
+.selectDot {
+  background-color: white;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+.colorOption {
+  width: 50px;
+  display: grid;
+}
+.colorOption img {
+  width: 50px;
+}
+.inputfield {
+  display: grid;
+  width: 100%;
+}
+.inputfield h3 {
+  box-sizing: content-box;
+  background-color: white;
+  color: black;
+  margin: 0px auto 0px auto;
+  width: fit-content;
+  border-radius: 10px 10px 0px 0px;
+  padding: 10px 10px 0px 10px;
+  font-size: large;
+}
+.inputfield input {
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+.selections {
+  display: grid;
+  gap: 10px;
+  border: 5px white solid;
+  padding: 10px;
+  grid-auto-flow: column;
+  justify-items: center;
+  border-radius: 10px;
+}
+/*Main center*/
+#homeLogo {
+  height: 100px;
+}
+#mainBox {
+  box-sizing: border-box;
+  width: 100%;
+  display: grid;
+  place-items: Center;
+  gap: 1rem;
+  height: fit-content;
+}
+.title {
+  margin-top: -30px;
+}
+
+#codeContainer {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  text-align: center;
+  border: 5px white solid;
+  border-radius: 10px;
+  width: 70%;
+}
+#codeContainer input {
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+}
+#codeContainer button {
+  box-sizing: border-box;
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+  background-color: white;
+  border: none;
+  border-radius: 0px;
+}
+/*Games*/
+#openGames {
+  width: 100%;
+}
+#divider {
+  box-sizing: border-box;
+  width: 80%;
+  border: 2px solid white;
+  margin-top: 75px;
+  background-color: white;
 }
 #redcircle {
   display: none;
@@ -16,18 +126,83 @@
   z-index: 0;
 }
 
-#homeLogo {
-  height: 100px;
+#gamesBox {
+  text-align: center;
+  width: 100%;
 }
-.title {
-  margin-top: -30px;
+#gamesBox hr {
+  margin: 0px auto 0px auto;
 }
-@media (max-width: 700px) {
+#gamesBox h2 {
+  margin: 0px;
+}
+#openGamesContainer {
+  margin: 0px;
+  height: 500px;
+  padding-top: 25px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+#openGamesContainer div {
+  margin: 0px auto 10px auto;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  text-align: center;
+  border: 5px white solid;
+  border-radius: 10px;
+  width: 70%;
+  height: 50px;
+  grid-template-columns: 2fr 1fr;
+}
+#openGamesContainer div p {
+  margin: 0px;
+}
+#openGamesContainer div button {
+  box-sizing: border-box;
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+  background-color: white;
+  border: none;
+  border-radius: 0px;
+}
+/*Other*/
+#bottomButtons {
+  bottom: 0px;
+  top: auto;
+}
+#homeContainer {
+  height: 100%;
+  display: grid;
+  width: 100%;
+  gap: 10px;
+  place-items: center;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(3, 1fr);
+}
+.homePanel {
+  margin: auto 0px auto 0px;
+  padding: 10px;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
   input {
     width: 80%;
   }
   #homeLogo {
     height: 80px;
+  }
+  #homeContainer {
+    grid-template-columns: 1fr;
+  }
+  #codeContainer {
+    width: 90%;
+  }
+}
+@media (min-width: 1000px) {
+  #bottomButtons {
+    display: none;
   }
 }
 @media (max-height: 700px) {
@@ -36,5 +211,11 @@
   }
   .title {
     margin-bottom: 0px;
+  }
+  #profileBox {
+    gap: 10px;
+  }
+  #openGamesContainer {
+    height: 400px;
   }
 }

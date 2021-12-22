@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="global.css">
     <link rel="stylesheet" type="text/css" href="home.css">
     <link rel="stylesheet" type="text/css" href="game/game.css">
     <link rel="stylesheet" type="text/css" href="rulespage.css">
@@ -27,6 +27,8 @@
     <script src="global.js"></script>
     <script src="gamertag.js"></script>
     <script src="home.js"></script>
+    <script src="customizer.js"></script>
+    <script src="gameBrowser.js"></script>
 
     <!-- Game files -->
     <script src="game/cell.js"></script>
@@ -36,23 +38,103 @@
     <!-- Game files -->
 
     <div id="homepage">
-        <img id="redcircle" src="media/redcircle.svg" />
-        <div class="centerContainer">
 
-            <div class="centerBox">
-                <img id="homeLogo" src="media/icon.svg" />
-                <h1 class="title">Vektorskak</h1>
-                <input id="username" type="text" placeholder="Username" maxlength=20>
-                <input id="input" type="text" placeholder="Code" maxlength=6>
-                <button id="startButton">Join Game</button>
-                <hr id="divider" class="solid">
-                <h3 id="new">New game</h3>
-                <div>
-                    <button id="newOnlineButton">Online</button>
-                    <button id="newLocalButton">Local</button>
+        <div id="homeContainer">
+            <div id="profile" class="homePanel hidden">
+
+                <div class="" id="profileBox">
+                    <h2>Profile</h2>
+                    <hr id="divider" class="solid">
+
+                    <div class="inputfield">
+                        <h3>Username</h3>
+                        <input id="username" type="text" placeholder="Username" maxlength=20>
+                    </div>
+                    <div id="colors">
+                        <div class="inputfield" id="blueTeam">
+                            <h3>Blue team</h3>
+                            <div class="selections">
+                                <div class="colorOption" id="blue">
+                                    <img src="media/colors/blue_joint.svg">
+                                    <div class="selectDot hidden" id="blueDot"></div>
+                                </div>
+                                <div class="colorOption" id="green">
+                                    <img src="media/colors/green_joint.svg">
+                                    <div class="selectDot hidden" id="greenDot"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="inputfield" id="redTeam">
+                            <h3>Red team</h3>
+                            <div class="selections">
+                                <div class="colorOption" id="red">
+                                    <img src="media/colors/red_joint.svg">
+                                    <div class="selectDot hidden" id="redDot"></div>
+                                </div>
+                                <div class="colorOption" id="purple">
+                                    <img src="media/colors/purple_joint.svg">
+                                    <div class="selectDot hidden" id="purpleDot"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputfield">
+                        <h3>Shape</h3>
+                        <div class="selections">
+                            <div class="colorOption" id="circle">
+                                <img src="media/shapes/circle_shape.svg">
+                                <div class="selectDot hidden" id="circleDot"></div>
+                            </div>
+                            <div class="colorOption" id="rectangle">
+                                <img src="media/shapes/rect_shape.svg">
+                                <div class="selectDot hidden" id="rectangleDot"></div>
+                            </div>
+                            <div class="colorOption" id="diamond">
+                                <img src="media/shapes/diamond_shape.svg">
+                                <div class="selectDot hidden" id="diamondDot"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div id="home" class="homePanel hidden">
+
+                <div id="mainBox" class="">
+                    <img id="homeLogo" src="media/icon.svg" />
+                    <h1 class="title">Vektorskak</h1>
+                    <div id="codeContainer">
+                        <input id="input" type="text" placeholder="Game Code" maxlength=6>
+                        <button id="startButton">Join</button>
+
+                    </div>
+
+                    <button id="newOnlineButton">Create Game</button>
+                    <hr id="divider" class="solid">
+                    <div>
+                        <button id="newLocalButton">Play locally</button>
+                    </div>
+                </div>
+            </div>
+            <div id="openGames" class="homePanel hidden">
+
+                <div id="gamesBox" class="">
+                    <h2>Games</h2>
+                    <hr id="divider" class="solid">
+                    <div id="openGamesContainer">
+
+                    </div>
+                    <hr id="divider" class="solid">
                 </div>
             </div>
         </div>
+
+
+
         <div class="cornerButtons">
             <form action="https://ko-fi.com/alfenstein" method="get" target="_blank">
                 <button type="submit" style="display:grid; grid-auto-flow: column; align-items: center; gap:10px">
@@ -70,6 +152,12 @@
                 </button>
             </form>
         </div>
+        <div class="cornerButtons" id="bottomButtons">
+            <button id="customizeButton">Customize</button>
+            <button id="homeButton">Home</button>
+            <button id="openGamesButton">Open Games</button>
+        </div>
+
     </div>
     <div class="hidden" id="gamepage">
         <div class="cornerButtons">

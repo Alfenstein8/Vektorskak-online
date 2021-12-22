@@ -51,8 +51,6 @@ function DecideRematch() {
 }
 //#region
 function SetupNewGame() {
-  defaultGameSettings.teamColors[1] = teamColors.blue
-  defaultGameSettings.teamColors[2] = teamColors.red
   aliveChains = []
   deadChains = []
   gameLog = []
@@ -70,6 +68,9 @@ function SetupNewGame() {
   localPlay = gameID == "local"
 
   if (localPlay) {
+    teamColors = userProfile.color
+    teamShapes[1] = userProfile.shape
+    teamShapes[2] = userProfile.shape
     topTeamName.html("")
     bottomTeamName.html("")
     connected = true
@@ -78,6 +79,7 @@ function SetupNewGame() {
     ReadySetup()
     return
   }
+
   if (gameID.length != 6) document.getElementById("gameCode").innerHTML = "Game does not exist"
 
   let name = user.displayName
@@ -91,6 +93,7 @@ function SetupNewGame() {
       gameSettings = _settings
       JoinGame(gameID, user).then((t) => {
         team = t
+        teamColors[team] = userProfile.color[team]
         UpdateTurnUI()
         connected = true
         ReadySetup()
@@ -104,6 +107,10 @@ function SetupNewGame() {
             child = createP(player.val().username)
             select("#users").child(child)
           }
+          teamColors[player.val().team] = player.val().skin.color[player.val().team]
+          teamShapes[player.val().team] = player.val().skin.shape
+          display = true
+          UpdateTurnUI()
 
           child.html(player.val().username)
           connectedPlayers[player.key] = {
@@ -190,12 +197,12 @@ function ApplyMoveFromLog(log) {
 }
 
 function FormatteamColors() {
-  for (let i = 0; i < gameSettings.teamColors.length; i++) {
-    const keys = Object.keys(gameSettings.teamColors[i])
-    const values = Object.values(gameSettings.teamColors[i])
+  for (let i = 0; i < teamColors.length; i++) {
+    const keys = Object.keys(teamColors[i])
+    const values = Object.values(teamColors[i])
     for (let j = 0; j < keys.length; j++) {
       const key = keys[j]
-      gameSettings.teamColors[i][key] = values[j]
+      teamColors[i][key] = values[j]
     }
   }
 }
@@ -245,7 +252,7 @@ function draw() {
     strokeWeight(1)
     textAlign(CENTER, CENTER)
     textSize(unit * 1)
-    fill(gameSettings.teamColors[index].normal)
+    fill(teamColors[index].normal)
     ShowText("Player " + index + " wins", width / 2, height / 2)
   }
 }
@@ -274,7 +281,6 @@ function mousePressed() {
   if (GetMousePos().x < 0 || GetMousePos().y < 0 || GetMousePos().x > gameSettings.boardW * unit || GetMousePos().y > gameSettings.boardH * unit)
     return
   let joint = GetUpperJoint(GetMouseCell())
-  //console.log(IsTeamHead(joint))
   if (joint != undefined && joint.chain.team == turn && joint == joint.chain.head && (localPlay || turn === team)) {
     selected = selected == undefined ? joint.chain : undefined
   }

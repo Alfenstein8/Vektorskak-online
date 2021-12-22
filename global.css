@@ -27,7 +27,11 @@ input {
   font-size: 2rem;
   text-align: center;
   font-family: "Josefin_Sans";
-  border-radius: 5px;
+  border-radius: 10px;
+  background-color: black;
+  border: 5px white solid;
+  color: white;
+  height: 50px;
 }
 button {
   font-family: "staatliches";
@@ -67,7 +71,7 @@ p {
   font-size: 1.5rem;
 }
 .hidden {
-  display: none;
+  display: none !important;
 }
 #homepage,
 #gamepage,
@@ -86,12 +90,7 @@ p {
   place-items: Center;
   height: 100%;
 }
-@media (max-height: 700px) {
-  .cornerButtons {
-    grid-auto-flow: row;
-  }
-}
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
   .title {
     font-size: 3rem;
   }
@@ -113,7 +112,8 @@ p {
     grid-auto-flow: column;
   }
   .cornerButtons button {
-    margin: 10px 2px 0px 2px;
+    margin: 10px 2px 10px 2px;
+    padding: 2px 10px 2px 10px;
   }
   button {
     font-size: 1.4rem;
