@@ -7,22 +7,28 @@ function gameBrowserSetup() {
         .get()
         .then((game) => {
           if (game.val().players != null) {
-            DisplayGame(game.val())
+            DisplayGame(game.val(), gameID)
           }
         })
     }, 1000)
   })
 }
-
-function DisplayGame(game) {
+function DisplayGame(game, key) {
   let name
   for (const ID in game.players) {
     name = game.players[ID].username
   }
-  let child = createDiv("<p>" + name + "</p><button>Join</button>")
+  let child = createDiv("<p>" + name + "</p><button id=" + key + " onclick='gamePressed(this)'>Join</button>")
+  child.addClass("openGame")
   gamesContainer.child(child)
-  child.mousePressed(() => {
-    gameID = key
-    Username()
-  })
+}
+function gamePressed(element) {
+  gameID = element.id
+  if (user.displayName != username.value()) {
+    SetUsername(username.value(), () => {
+      ChangePage(gamepage)
+    })
+  } else {
+    ChangePage(gamepage)
+  }
 }

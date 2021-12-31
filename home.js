@@ -1,5 +1,6 @@
 var username
 var user
+let mobileLayout
 function HomeSetup() {
   startButton = select("#startButton")
   newOnlineButton = select("#newOnlineButton")
@@ -14,7 +15,7 @@ function HomeSetup() {
   openGames = select("#openGames")
   home = select("#home")
   profile = select("#profile")
-
+  mobileLayout = false
   firebase.auth().onAuthStateChanged((changedUser) => {
     user = changedUser
     if (changedUser.displayName != undefined) username.value(changedUser.displayName)
@@ -38,11 +39,23 @@ function HomeSetup() {
 
   startButton.mousePressed(() => {
     gameID = input.value()
-    Username()
+    if (user.displayName != username.value()) {
+      SetUsername(username.value(), () => {
+        ChangePage(gamepage)
+      })
+    } else {
+      ChangePage(gamepage)
+    }
   })
   newOnlineButton.mousePressed(() => {
     CreateNewGame(user, defaultGameSettings).then(() => {
-      Username()
+      if (user.displayName != username.value()) {
+        SetUsername(username.value(), () => {
+          ChangePage(gamepage)
+        })
+      } else {
+        ChangePage(gamepage)
+      }
     })
   })
   newLocalButton.mousePressed(() => {
@@ -52,17 +65,20 @@ function HomeSetup() {
   howToPlayButton.mousePressed(() => {
     ChangePage(rulespage)
   })
+  UpdateHomePanels()
 }
 var resize = new ResizeObserver((entries) => {
   UpdateHomePanels()
 })
 function UpdateHomePanels() {
-  console.log()
-  if (window.innerWidth < 1000) {
+  if (window.innerWidth < 1000 && !mobileLayout) {
+    mobileLayout = true
     profile.addClass("hidden")
     home.removeClass("hidden")
     openGames.addClass("hidden")
-  } else {
+  }
+  if (window.innerWidth > 1000) {
+    mobileLayout = false
     profile.removeClass("hidden")
     home.removeClass("hidden")
     openGames.removeClass("hidden")
@@ -75,18 +91,3 @@ resize.observe(document.body)
 //     Username()
 //   }
 // })
-function Username() {
-  if (username.value() === "") {
-    user.updateProfile({ displayName: generate_badass_gamertag() }).then(() => {
-      ChangePage(gamepage)
-    })
-  } else {
-    if (user.displayName == username.value()) {
-      ChangePage(gamepage)
-    } else {
-      user.updateProfile({ displayName: username.value() }).then(() => {
-        ChangePage(gamepage)
-      })
-    }
-  }
-}

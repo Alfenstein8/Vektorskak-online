@@ -219,3 +219,8 @@ function GenerateCode(length) {
   }
   return code
 }
+function SetUsername(name, callback) {
+  user.updateProfile({ displayName: name }).then(() => {
+    callback()
+  })
+}

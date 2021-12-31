@@ -143,22 +143,22 @@
   overflow-x: hidden;
   overflow-y: scroll;
 }
-#openGamesContainer div {
-  margin: 0px auto 10px auto;
+.openGame p {
+  margin: 10px;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.openGame {
+  border: white solid 5px;
+  border-radius: 10px;
   display: grid;
   grid-auto-flow: column;
-  align-items: center;
-  text-align: center;
-  border: 5px white solid;
-  border-radius: 10px;
+  grid-template-columns: 3fr 1fr;
+  margin: 10px auto 0px auto;
   width: 70%;
-  height: 50px;
-  grid-template-columns: 2fr 1fr;
 }
-#openGamesContainer div p {
-  margin: 0px;
-}
-#openGamesContainer div button {
+.openGame button {
   box-sizing: border-box;
   height: calc(100% + 2px);
   width: calc(100% + 2px);
